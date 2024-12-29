@@ -181,7 +181,7 @@ export const LoginTabContent = () => (
   <TabContent
     title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
       > Login with us </Typography>
-    } backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Flogin.jpg?alt=media&token=a810ff0a-6305-4be3-8a40-d0abbb0b8875" />
+    } backgroundImage="https://i.postimg.cc/ZRTKbj5d/pexels-richard-segal-732340-1645028.jpg" />
 );
 
 export const RegisterTabContent = () => (
