@@ -79,16 +79,16 @@ const Rooms = () => {
   return (
     <div style={{ backgroundColor: '#f9f9f9' }}>
       <br />
-      <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script' , fontSize: '50px'  }}>Book Now</h1>
+      <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script' , fontSize: '50px', fontWeight: 'bold'  }}>Book Now</h1>
       <br />
 
-      <div style={{ maxWidth: '50vw', margin: '0 auto', position: 'relative', left: '46vw',bottom: '1vh', zIndex: '1' }}>
+      <div style={{  margin: '0 0',width: 'fit-content', position: 'relative', left: '10vw',bottom: '1vh', zIndex: '1' }}>
         <DateRange onDateChange={handleDateRangeChange} />
       </div>
 
       <div style={{ padding: '0 10%', marginTop: '1%' }}>
         <RoomSearch setFilteredRooms={setFilteredRooms} rooms={rooms} />
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {Array.isArray(filteredRooms) && filteredRooms.map((room) => (
             <Grid item key={room._id} xs={12} sm={6} md={4}>
               <div
@@ -224,7 +224,6 @@ const Rooms = () => {
                       Book Now
                     </button>
                   </div>
-                  
                 </div>
               </div>
             </Grid>

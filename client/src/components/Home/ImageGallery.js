@@ -32,7 +32,6 @@ const ImageGallery = () => {
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease', 
                 paddingBottom: '1vh',
               }}
-              onClick={handleClick}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'scale(1.05)';
                 e.currentTarget.style.boxShadow = '0px 8px 12px rgba(0, 0, 0, 0.15)';

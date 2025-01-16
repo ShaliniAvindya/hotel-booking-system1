@@ -100,7 +100,7 @@ const LiveChat = () => {
             position: 'fixed',
             bottom: '80px',
             right: '30px',
-            width: '300px',
+            width: '40vw',
             height: '450px', 
             backgroundColor: '#cce6f4',
             boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.3)',
@@ -113,7 +113,7 @@ const LiveChat = () => {
         >
           {/* Header */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <Typography variant="h5" sx={{ fontFamily: 'Dancing Script', fontSize: '18px' }}>Live Chat</Typography>
+            <Typography variant="h5" sx={{ fontFamily: 'Dancing Script', fontSize: '18px', fontWeight: 'bold' }}>Live Chat</Typography>
             <Button onClick={toggleChatWindow} style={{ padding: '0', minWidth: 'auto', fontSize: '18px' }}>X</Button>
           </Box>
 
@@ -140,7 +140,7 @@ const LiveChat = () => {
                 <Typography
                   sx={{
                     display: 'inline-block',
-                    backgroundColor: message.sender === 'bot' ? '#f0f0f0' : '#25d366',
+                    backgroundColor: message.sender === 'bot' ? '#f0f0f0' : '#13b9cf',
                     color: message.sender === 'bot' ? '#000' : '#fff',
                     padding: '10px 15px',
                     borderRadius: '12px',
@@ -166,7 +166,7 @@ const LiveChat = () => {
             )}
           </Box>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center'}}>
             <TextField
               variant="outlined"
               placeholder="Type a message..."
@@ -177,7 +177,7 @@ const LiveChat = () => {
               InputProps={{
                 style: {
                   fontSize: '14px',
-                  padding: '10px',
+                  padding: '0 10px',
                 }
               }}
             />
