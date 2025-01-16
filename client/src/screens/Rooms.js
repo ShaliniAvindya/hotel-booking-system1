@@ -1,92 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
-import {styled} from '@mui/system';
-import moment from 'moment';
-import { Link } from 'react-router-dom';
-import {
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button
-} from '@mui/material';
+import { Grid, Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
 import DateRange from '../components/DateRange';
-import BookRoom from './BookRoom';
 import Footer from '../components/Footer';
+import ClickablePicture from '../components/Home/ClickablePicture';
+import FreeBreakfastIcon from '@mui/icons-material/FreeBreakfast';
+import WifiIcon from '@mui/icons-material/Wifi';
+import BathtubIcon from '@mui/icons-material/Bathtub';
+import LocalLaundryServiceIcon from '@mui/icons-material/LocalLaundryService';
+import SafetyCheckIcon from '@mui/icons-material/SafetyCheck';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
+import { Carousel } from 'react-responsive-carousel';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'; // Import arrow icons
+import RoomSearch from '../components/RoomSearch';
 
-const useStyles = styled('div')({
-  largeImage: {
-    height: '300px', 
-    objectFit: 'cover',
-  },
-});
+const facilityIcons = {
+  "Free Wi-Fi": <WifiIcon />,
+  "Minibar": <FreeBreakfastIcon />,
+  "Shower WC": <BathtubIcon />,
+  "Bathrobe": <LocalLaundryServiceIcon />,
+  "In-room Digital Safe": <SafetyCheckIcon />,
+  "Iron and Iron Board": <LocalLaundryServiceIcon />,
+};
 
-const RoomsList = () => {
+const Rooms = () => {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
-
-  const classes = useStyles;
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:5000/rooms/all');
-  //       console.log('Response data:', response.data);
-  //       setRooms(prevRooms => {
-  //         console.log('Previous rooms:', prevRooms);
-  //         return response.data.rooms;
-  //       }); 
-  //       console.log('Rooms after setRooms:', rooms);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  
-  //   fetchData();
-  // }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/rooms/all');
-        console.log('Response data:', response.data);
-  
-        const filteredRooms = response.data.rooms.filter((room) => {
-          return (
-            !room.currentBookings.some((booking) => {
-              const bookingStartDate = moment(booking.from_date);
-              const bookingEndDate = moment(booking.to_date);
-              return (
-                (bookingStartDate.isSameOrBefore(fromDate) && bookingEndDate.isSameOrAfter(fromDate)) ||
-                (bookingStartDate.isSameOrBefore(toDate) && bookingEndDate.isSameOrAfter(toDate)) ||
-                (bookingStartDate.isAfter(fromDate) && bookingEndDate.isBefore(toDate))
-              );
-            })
-          );
-        });
-  
-        setRooms(filteredRooms);
-  
-      } catch (error) {
-        console.error(error);
-      }
-    };
-  
-    fetchData();
-  }, [fromDate, toDate]);
+  const [filteredRooms, setFilteredRooms] = useState([]);
 
   const handleRoomClick = (room) => {
     setSelectedRoom(room);
-    console.log(room);
     setOpenDialog(true);
   };
 
@@ -95,92 +41,130 @@ const RoomsList = () => {
   };
 
   const handleDateRangeChange = (dates) => {
-    setFromDate(moment(dates[0]).format('YYYY-MM-DD'));
-    setToDate(moment(dates[1]).format('YYYY-MM-DD'));
-    localStorage.setItem('fromDate', moment(dates[0]).format('YYYY-MM-DD'));
-    localStorage.setItem('toDate', moment(dates[1]).format('YYYY-MM-DD'));
-    console.log(localStorage.getItem('fromDate'));
-    console.log(localStorage.getItem('toDate'));
-  }
+    setFromDate(dates[0]);
+    setToDate(dates[1]);
+  };
 
   useEffect(() => {
-    console.log(rooms.length);
-  }, [rooms]); 
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/rooms', {
+          params: {
+            fromDate,
+            toDate,
+          },
+        });
+        setRooms(response.data);
+        setFilteredRooms(response.data); // Initially, all rooms are shown
+      } catch (error) {
+        console.error('Error fetching rooms:', error);
+      }
+    };
+    fetchData();
+  }, [fromDate, toDate]); // Run on date changes
 
   return (
-    <div><br></br><br></br>
-      <h1 style={{ textAlign:"center" ,fontFamily: 'Dancing Script'}} >Book Now</h1><br></br>
-      <DateRange onDateChange={handleDateRangeChange}/>
-      <Grid container spacing={3} style={{marginTop:"1%"}}>
-        {Array.isArray(rooms) && rooms.length > 0 && rooms.map((room, index) => (
-          <Grid item key={index} xs={12} sm={6} md={3}>
-            <Card>
-              <CardActionArea onClick={() => handleRoomClick(room)}>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    image={room.imageUrls[0]} 
-                    alt={room.name}
-                />
-                <CardContent>
-                  <Typography variant="h6" component="div">
-                    {room.name}
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
-                    {room.type} - Max Count: {room.maxCount}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+    <div>
+      <br />
+      <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script' , fontSize: '50px'  }}>Book Now</h1>
+      <br />
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md">
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <DateRange onDateChange={handleDateRangeChange} />
+      </div>
+      <br />
+
+      <div style={{ padding: '0 10%', marginTop: '1%' }}>
+        <RoomSearch setFilteredRooms={setFilteredRooms} rooms={rooms} />
+        <Grid container spacing={3}>
+          {Array.isArray(filteredRooms) && filteredRooms.map((room) => (
+            <Grid item key={room._id} xs={12} sm={6} md={4}>
+              <ClickablePicture
+                imageUrl={room.imageUrls[0]}
+                title={room.name}
+                sentence1={`Type: ${room.type}\n${room.description}`} 
+                onClick={() => handleRoomClick(room)}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog} 
+        maxWidth="md" 
+        fullWidth
+        PaperProps={{
+          style: { minHeight: '500px' },
+        }}
+      >
         {selectedRoom && (
           <>
-           
-            <CardMedia
-              component="img"
-              alt={selectedRoom.name}
-              className={classes.largeImage}
-              height="140"
-              image={selectedRoom.imageUrls[0]} 
-            />
-
-            {/* Room details */}
+            <Carousel
+              showThumbs={false}
+              infiniteLoop
+              useKeyboardArrows
+              autoPlay
+              renderArrowPrev={(onClickHandler, hasPrev) =>
+                hasPrev && (
+                  <div onClick={onClickHandler} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', zIndex: 10 }}>
+                    <KeyboardArrowLeft style={{ fontSize: '40px', color: '#fff' }} />
+                  </div>
+                )
+              }
+              renderArrowNext={(onClickHandler, hasNext) =>
+                hasNext && (
+                  <div onClick={onClickHandler} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', zIndex: 10 }}>
+                    <KeyboardArrowRight style={{ fontSize: '40px', color: '#fff' }} />
+                  </div>
+                )
+              }
+            >
+              {selectedRoom.imageUrls.map((url, index) => (
+                <div key={index}>
+                  <img src={url} alt={`${selectedRoom.name}`} style={{ width: '100%', height: '450px' }} />
+                </div>
+              ))}
+            </Carousel>
             <DialogTitle>{selectedRoom.name}</DialogTitle>
             <DialogContent>
-              <Typography>
-                Type: {selectedRoom.type}
-              </Typography>
-              <Typography>
-                Max Count: {selectedRoom.maxCount}
-              </Typography>
-              <Typography>
-                Phone Number: {selectedRoom.phoneNumber}
-              </Typography>
-              <Typography>
-                Rent Per Day: {selectedRoom.rentPerDay}
-              </Typography>
-            </DialogContent>
+              <Typography variant="body1">Type: {selectedRoom.type}</Typography>
+              <Typography variant="body1">Description: {selectedRoom.description}</Typography>
 
-            {/* Dialog actions */}
+              <Box display="flex" justifyContent="space-between" mt={2}>
+                <Typography variant="body1">Max Count: {selectedRoom.maxCount}</Typography>
+                <Typography variant="body1">Phone Number: {selectedRoom.phoneNumber}</Typography>
+                <Typography variant="body1">Rent Per Day: {selectedRoom.rentPerDay}</Typography>
+              </Box>
+
+              <Typography variant="h6" style={{ marginTop: '10px' }}>Facilities:</Typography>
+              <Box display="flex" flexWrap="wrap" gap={2} alignItems="center">
+                {Array.isArray(selectedRoom.facilities) && selectedRoom.facilities.map((facility, index) => (
+                  <Box key={index} display="flex" alignItems="center">
+                    {facilityIcons[facility] || null} {/* Render the corresponding icon */}
+                    <Typography variant="body2" style={{ marginLeft: '8px' }}>{facility}</Typography>
+                  </Box>
+                ))}
+              </Box>
+            </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog} color="primary">
-                Close
+              <Button onClick={handleCloseDialog} color="primary">Close</Button>
+              <Button
+                color="primary"
+                onClick={() => window.location.href = `/rooms/${selectedRoom._id}`}
+              >
+                Book Now
               </Button>
-              <a href={`/rooms/${selectedRoom._id}`}><Button color="primary">
-                Book Now 
-              </Button></a>
             </DialogActions>
           </>
         )}
-      </Dialog><br></br><br></br>
+      </Dialog>
+      <br /><br />
 
       <Footer />
     </div>
   );
 };
 
-export default RoomsList;
+export default Rooms;

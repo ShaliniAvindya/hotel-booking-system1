@@ -17,5 +17,7 @@ app.use('/rooms', roomRoutes);
 app.use('/users', userRoutes);
 app.use('/book', bookingRoutes);
 
-const port = process.env.port || 6000;
+
+const port = process.env.port || 3000;
+
 app.listen(port, ()=>console.log(`Server running on ${port}`));
