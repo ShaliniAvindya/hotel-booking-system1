@@ -72,7 +72,7 @@ const ContactUsForm = () => {
           alignItems: "center",
           minHeight: "70vh",
           padding: "20px",
-          margin: "2vh 0"
+          backgroundColor: 'rgba(240,240,240,1)'
         }}
       >
         <Card
