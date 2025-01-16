@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Box, Typography, TextField } from "@mui/material";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 const BookingCalendar = ({ onDateRangeSelect }) => {
   const [showCheckinCalendar, setShowCheckinCalendar] = useState(false);
@@ -68,23 +69,35 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
     position: "relative",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    backgroundColor: "#bbdefb",
+    alignItems: "left",
+    padding: "5px 10px",
     borderRadius: "4px",
-    padding: "10px 20px",
-    boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
     cursor: "pointer",
-    height: "70px",
     justifyContent: "center",
   };
 
+  const commonBoxStylesIn = {
+    color: "rgba(0,0,0,0.8)",
+    backgroundColor: "rgba(240,240,240,0.8)",
+    border: '1.5px solid rgba(1, 34, 92,0.4)',
+    width: "100%",
+    padding: "10px 10px",
+    borderRadius: "4px",
+    display: "flex",
+    justifyContent: "space-between",
+    fontWeight: "bold",
+  }
+
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: "15px", width: "100% ", marginLeft: "-30px" }}>
+    <Box sx={{ display: "flex", alignItems: "center", width: "100% ", marginLeft: "0px", borderRadius: '4px' }}>
       {/* Check-In Date Tab */}
       <Box ref={checkinRef} sx={commonBoxStyles} onClick={handleCheckinClick}>
-        <Typography sx={{ fontWeight: "bold", color: "#333", marginBottom: "5px" }}>Check-In Date</Typography>
-        <Typography sx={{ color: "#333" }}>
+        <Typography sx={{  color: "#333", marginBottom: "5px" }}>Check-In Date</Typography>
+        <Typography sx={commonBoxStylesIn}>
           {checkinDate ? checkinDate.toLocaleDateString() : "Select Check-In Date"}
+          <CalendarTodayIcon
+              sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
+          />
         </Typography>
       </Box>
 
@@ -99,9 +112,12 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
 
       {/* Check-Out Date Tab */}
       <Box ref={checkoutRef} sx={commonBoxStyles} onClick={handleCheckoutClick}>
-        <Typography sx={{ fontWeight: "bold", color: "#333", marginBottom: "5px" }}>Check-Out Date</Typography>
-        <Typography sx={{ color: "#333" }}>
+        <Typography sx={{ color: "#333", marginBottom: "5px" }}>Check-Out Date</Typography>
+        <Typography sx={commonBoxStylesIn}>
           {checkoutDate ? checkoutDate.toLocaleDateString() : "Select Check-Out Date"}
+          <CalendarTodayIcon
+              sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
+          />
         </Typography>
       </Box>
 
@@ -116,7 +132,7 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
 
       {/* Promo Code Tab */}
       <Box sx={commonBoxStyles}>
-        <Typography sx={{ fontWeight: "bold", color: "#333", marginBottom: "5px" }}>Promo Code</Typography>
+        <Typography sx={{ color: "#333", marginBottom: "5px" }}>Promo Code</Typography>
         <TextField
           value={promoCode}
           onChange={handlePromoCodeChange}
@@ -124,7 +140,15 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
           fullWidth
           variant="standard"
           InputProps={{ disableUnderline: true }}
-          sx={{ textAlign: "center" }}
+          sx={{ 
+            color: "rgba(0,0,0,0.8)",
+            backgroundColor: "rgba(240,240,240,0.8)",
+            border: '1.5px solid rgba(1, 34, 92,0.4)',
+            width: "100%",
+            padding: "5px 10px",
+            borderRadius: "4px",
+            
+          }}
         />
       </Box>
 

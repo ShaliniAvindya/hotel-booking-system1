@@ -55,6 +55,7 @@ const HomeScreen = () => {
               marginLeft: '20px',
               justifyContent: 'center',
               border: '1px solid rgba(54, 160, 226, 0.71)',
+              padding: '20px 30px',
             }}
           >
             <h2
@@ -76,7 +77,8 @@ const HomeScreen = () => {
                 lineHeight: '1.8',
                 color: '#4472CA',
                 textAlign: 'center',
-                margin: '5px'
+                margin: '5px',
+                textAlign: 'justify'
               }}
             >
             Embark on a journey through the heart of our legacy with a special documentary that brings our story to life. Through the voices of our owners, cherished guests, and devoted team, discover the essence of our unparalleled Maldivian hospitality and the magic that makes our island a timeless sanctuary.            </p>
@@ -92,8 +94,15 @@ const HomeScreen = () => {
                 backgroundColor: '#023e8a',
                 textDecoration: 'none',
                 border: 'solid 1px',
+                borderRadius: '5px',
                 borderColor: '#0A369D',
                 marginTop: '20px',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#0A369D';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = '#023e8a';
               }}
             >
               View Documentary

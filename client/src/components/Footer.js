@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Container, Grid, Button, IconButton } from
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { LocationOn, Phone, Email } from '@mui/icons-material';
 
 const mapContainerStyle = {
   width: '100%',
@@ -22,24 +23,43 @@ const Footer = () => {
   };
 
   return (
-    <AppBar position="static" style={{ backgroundColor: '#023e8a', height: '85vh' }}>
+    <AppBar position="static" style={{ backgroundColor: '#023e8a', height: 'auto' }}>
       <Container>
         <Toolbar>
-          <Grid container spacing={6} alignItems="center" marginTop="20px">
+          <Grid container spacing={6} alignItems="center" marginTop="20px" gap={2}>
             <Grid item>
-              <div>
+              <div style={{ marginTop: '-10vh' }}>
                 <Typography variant="h3" gutterBottom style={{ color: '#fff' }}>
                   The LUXURY Hotel
                 </Typography>
-                <Typography variant="h6" gutterBottom style={{ color: '#fff' }}>
-                  123 Main Street, Colombo, Sri Lanka
+                <Typography variant="h6" gutterBottom style={{ color: '#fff', display: 'flex', alignItems: 'center' }}>
+                  <LocationOn style={{ marginRight: '8px' }} /> 123 Main Street, Colombo, Sri Lanka
                 </Typography>
-                <Typography variant="h6" gutterBottom style={{ color: '#fff' }}>
-                  Phone: +94 91 565 8956
+                <Typography variant="h6" gutterBottom style={{ color: '#fff', display: 'flex', alignItems: 'center' }}>
+                  <Phone style={{ marginRight: '8px' }} /> +94 91 565 8956
                 </Typography>
-                <Typography variant="h6" gutterBottom style={{ color: '#fff' }}>
-                  Email: example@example.com
+                <Typography variant="h6" gutterBottom style={{ color: '#fff', display: 'flex', alignItems: 'center' }}>
+                  <Email style={{ marginRight: '8px' }} /> example@example.com
                 </Typography>
+              </div>
+              <div style={{ marginTop: '15vh', textAlign: 'center' }}>
+                <Typography variant="h5" gutterBottom style={{ color: '#fff' }}>
+                  Connect With Us
+                </Typography>
+                <div>
+                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="facebook">
+                    <Facebook />
+                  </IconButton>
+                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="twitter">
+                    <Twitter />
+                  </IconButton>
+                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="instagram">
+                    <Instagram />
+                  </IconButton>
+                  <IconButton style={{ color: '#fff' }} aria-label="linkedin">
+                    <LinkedIn />
+                  </IconButton>
+                </div>
               </div>
             </Grid>
 
@@ -80,26 +100,6 @@ const Footer = () => {
                   <Marker position={center} />
                 </GoogleMap>
               </LoadScript><br></br>
-
-              <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                <Typography variant="h5" gutterBottom style={{ color: '#fff' }}>
-                  Connect With Us
-                </Typography>
-                <div>
-                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="facebook">
-                    <Facebook />
-                  </IconButton>
-                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="twitter">
-                    <Twitter />
-                  </IconButton>
-                  <IconButton style={{ color: '#fff', marginRight: '50px' }} aria-label="instagram">
-                    <Instagram />
-                  </IconButton>
-                  <IconButton style={{ color: '#fff' }} aria-label="linkedin">
-                    <LinkedIn />
-                  </IconButton>
-                </div>
-              </div>
             </Grid>
           </Grid>
         </Toolbar>

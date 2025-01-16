@@ -63,9 +63,21 @@ const HomeTabContent = () => {
 
   return (
     <div style={{ position: 'relative', minHeight: '98vh', opacity: '0.9' }}>
-      <Slider {...settings}>
-        <div>
-          <img src="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Fb.jpg?alt=media&token=8cd785be-e300-498d-8593-7bdd00698924" alt="Luxury hotel" style={{ width: '100%', height: '100vh' }} />
+      <Slider {...settings} dots={false}>
+        <div
+          style={{position: 'relative',}}
+        >
+          <img src="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Fb.jpg?alt=media&token=8cd785be-e300-498d-8593-7bdd00698924" alt="Luxury hotel" style={{ width: '100%', height: '100vh', objectFit: 'cover' }} />
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 30%, transparent 70%, rgba(0, 0, 0, 0.5))',
+            }}
+          />
         </div>
         <div>
           <img src="https://i.postimg.cc/8CYsNjcV/pexels-asadphoto-3426880.jpg" alt="ocean" style={{ width: '100%', height: '100vh' }} />
@@ -84,9 +96,19 @@ const HomeTabContent = () => {
         </div>
       </Slider>
 
-      <div style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translateX(-50%)' }}>
+      <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translateX(-50%)' }}>
         <AnimatedText>
-          <Typography variant="h1" component="div" style={{ textAlign: 'center' , fontFamily:'Playfair Display', color:"#001845" ,WebkitTextStroke: '1.3px white',}}>
+          <Typography 
+            variant="h1" 
+            component="div" 
+            style={{ 
+              textAlign: 'center' , 
+              fontFamily:'Playfair Display', 
+              color:"white", 
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+              fontSize: '90px',
+              fontWeight: 'bold',
+            }}>
             The Luxury Stay Awaits You
           </Typography>
         </AnimatedText>
@@ -96,36 +118,38 @@ const HomeTabContent = () => {
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        flexDirection: 'column',
+        flexDirection: 'row',
+        columnGap: '1vw',
         alignItems: 'center',
         position: 'absolute',
-        bottom: '5%',
+        bottom: '20%',
+        left: '20%',
         width: '60%',
-        marginLeft: '340px',
+        backgroundColor: 'rgba(255, 255, 255, 1)',
+        padding: '2vh 1.5vw 2vh 1.2vw',
+        borderRadius: '6px',
       }}>
 
         {/* Show Booking Calendar */}
         <BookingCalendar onDateRangeSelect={handleDateRangeSelect} />
         <button 
-  onClick={handleBooking}
-  style={{
-    backgroundColor: '#023e8a', 
-    color: 'white', 
-    padding: '10px 20px',
-    border: 'none', 
-    borderRadius: '4px', 
-    fontSize: '16px',
-    cursor: 'pointer', 
-    position: 'absolute', 
-    bottom: '5%', 
-    left: '105%', 
-    transform: 'translateX(-50%)', 
-    transition: 'background-color 0.3s ease', 
-  }}
->
-  Book Now
-</button>
-
+          onClick={handleBooking}
+          style={{
+            backgroundColor: '#023e8a', 
+            color: 'white', 
+            padding: '10px 10px',
+            marginTop: '30px',
+            borderRadius: '4px', 
+            fontSize: '16px',
+            cursor: 'pointer',
+            width: '10vw',
+            transition: 'background-color 0.3s ease',
+          }}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = '#001845')}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = '#023e8a')}
+        >
+          Book Now
+        </button>
       </div>
     </div>
   );
@@ -219,10 +243,8 @@ export const AccountTabContent = () => {
 };
 
 const Navigation = () => {
-  const [navBackground, setNavBackground] = useState('transparent');
   const [value, setValue] = useState(0);
   const [user, setUser] = useState();
-  const [textColor, setTextColor] = useState('white'); // Track text color
   const location = useLocation();
 
   useEffect(() => {
@@ -248,18 +270,11 @@ const Navigation = () => {
     }
   }, [location]);
 
+  const [scrollPosition, setScrollPosition] = useState(0);
+
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const navbarHeight = 80;
-
-      if (scrollPosition > navbarHeight) {
-        setNavBackground('#023e8a');
-        setTextColor('white'); 
-      } else {
-        setNavBackground('transparent');
-        setTextColor('black'); 
-      }
+      setScrollPosition(window.scrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -267,6 +282,9 @@ const Navigation = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const opacity = Math.min(1, (scrollPosition / 400)); 
+  const backgroundColor = `rgba(0, 62, 138, ${opacity})`;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -282,9 +300,10 @@ const Navigation = () => {
       <AppBar 
         position="fixed"
         style={{
-          backgroundColor: navBackground,
+          backgroundColor: backgroundColor,
+          backdropFilter: 'blur(10px)',
           boxShadow: 'none',
-          height: '100px',
+          height: '85px',
         }}
       >
         <Toolbar
@@ -293,23 +312,41 @@ const Navigation = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             height: '100%',
-            padding: '0 20px', 
+            padding: '0 2vw', 
           }}
         >
           {/* Left Tabs */}
+          <Typography
+            variant="h4"
+            component="div"
+            sx={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: '30px',
+              color: 'white', 
+              textAlign: 'left',
+              flex: 1, 
+            }}
+          >
+            THE HOTEL LUXURY
+          </Typography>
+
           <Tabs
             value={value}
             onChange={handleChange}
             textColor="inherit"
+            TabIndicatorProps={{ style: {backgroundColor: 'rgba(255,255,255,0.9)' ,height: "2px", marginBottom: "5px" } }}
             sx={{
               '.MuiTab-root': {
                 fontFamily: "'Playfair Display', serif",
-                fontSize: '23px',
+                fontSize: '20px',
                 textTransform: 'none', 
-                minWidth: '80px', 
-                marginLeft: '5px',
-                color: textColor, // Apply dynamic text color
+                minWidth: '5vw', 
+                marginLeft: '1vw',
+                color: "white",
+                transition: 'color 0.3s ease',
               },
+              flex: 2,
+              marginLeft: '11vw',
             }}
           >
             <Tab label="Home" component={Link} to="/" value={0} />
@@ -317,22 +354,6 @@ const Navigation = () => {
             <Tab label="Facilities" component={Link} to="/facilities" value={2} />
             <Tab label="Contact" component={Link} to="/contact" value={3} />
           </Tabs>
-
-          {/* Center Title */}
-          <Typography
-            variant="h4"
-            component="div"
-            sx={{
-              fontFamily: "'Playfair Display', serif",
-              fontSize: '40px',
-              color: textColor, // Apply dynamic text color
-              textAlign: 'center',
-              flex: 1, 
-              marginLeft: '-180px'
-            }}
-          >
-            THE HOTEL LUXURY
-          </Typography>
 
           {/* Right Tabs */}
           <Tabs
@@ -342,14 +363,24 @@ const Navigation = () => {
             sx={{
               '.MuiTab-root': {
                 fontFamily: "'Playfair Display', serif",
-                fontSize: '23px',
+                fontSize: '20px',
                 textTransform: 'none', 
-                minWidth: '80px',
-                marginLeft: '4px', // Add spacing between tabs
-                marginRight: '10px',
-                color: textColor, // Apply dynamic text color
-              },
+                minWidth: '8vw',
+                marginLeft: '1vw',
+                padding: '0px 10px',
+                color: 'white', 
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                borderRadius: '25px',
+                border: '1px solid white',
+                transition: 'background-color 0.3s ease, color 0.3s ease',
+                '&:hover': {
+                  backgroundColor: 'rgba(255,255,255,0.3)',
+                  color: "white",
+                  scale: 1.001,
+                }
+              }
             }}
+            style={{ marginRight: '1vw',padding: '20px 10px',}}
           >
             {!user && <Tab label="Login" component={Link} to="/login" value={5} />}
             {!user && <Tab label="Register" component={Link} to="/register" value={6} />}
