@@ -9,7 +9,11 @@ import {
   FormControl,
   Typography,
   Button,
+  InputAdornment,
+
 } from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import TextField from '@mui/material/TextField';
 
 const RoomSearch = ({ setFilteredRooms, rooms }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -98,40 +102,46 @@ const RoomSearch = ({ setFilteredRooms, rooms }) => {
   };
 
   return (
-    <div style={{ marginBottom: "20px" }}>
-      <input
-        type="text"
-        placeholder="Search rooms..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-        style={{
-          width: "100%",
-          padding: "10px",
-          fontSize: "16px",
-          borderRadius: "4px",
-          border: "1px solid #ccc",
-          marginBottom: "10px",
-        }}
-      />
+    <div style={{ marginBottom: "10vh" }}>
+      <div style={{ display: "flex", flexDirection: "row", gap: "10px", alignItems: "center" }}>
+        {/* Search Bar with Magnifying Glass Icon */}
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Search rooms..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon color="action" />
+              </InputAdornment>
+            ),
+          }}
+        />
 
-      {/* Room Type filter */}
-      <FormControl fullWidth style={{ marginBottom: "10px" }}>
-        <InputLabel>Room Type</InputLabel>
-        <Select value={roomType} onChange={handleRoomTypeChange} label="Room Type">
-          <MenuItem value="">Any</MenuItem>
-          {roomTypes.map((type) => (
-            <MenuItem key={type} value={type}>
-              {type}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        {/* Room Type filter */}
+        <FormControl fullWidth>
+          <InputLabel>Room Type</InputLabel>
+          <Select value={roomType} onChange={handleRoomTypeChange} label="Room Type">
+            <MenuItem value="">Any</MenuItem>
+            {roomTypes.map((type) => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+
+      
 
       {/* Facilities filter */}
-      <div style={{ marginBottom: "10px" }}>
+      <div style={{ marginBottom: "10px", marginTop: "4vh" }}>
         <Typography variant="h6">Facilities</Typography>
         {allFacilities.map((facility) => (
           <FormControlLabel
+            style={{ marginLeft: '1vw' }}
             key={facility}
             control={
               <Checkbox
@@ -145,7 +155,7 @@ const RoomSearch = ({ setFilteredRooms, rooms }) => {
       </div>
 
       {/* Price Range filter */}
-      <div style={{ marginBottom: "10px" }}>
+      <div style={{ marginBottom: "10px", marginTop: "4vh" }}>
         <Typography variant="h6">Price Range</Typography>
         <Slider
           value={priceRange}
@@ -159,9 +169,9 @@ const RoomSearch = ({ setFilteredRooms, rooms }) => {
 
       <Button
         variant="contained"
-        color="secondary"
+        color="primary"
         onClick={resetFilters}
-        style={{ marginTop: "10px" }}
+        style={{ marginTop: "20px", width: "100%" }}
       >
         Reset Filters
       </Button>

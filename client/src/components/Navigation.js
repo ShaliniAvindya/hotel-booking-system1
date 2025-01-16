@@ -180,8 +180,23 @@ const TabContent = ({ title, backgroundImage }) => (
 
 export const RoomsTabContent = () => (
   <TabContent
-    title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
-      > Our Rooms </Typography>
+    title={
+    <Typography 
+      variant="h1" 
+      component="div" 
+      style={{ 
+        textAlign: 'center' , 
+        fontFamily:'Playfair Display', 
+        color:"white", 
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+        fontSize: '90px',
+        fontWeight: 'bold',
+        height: '90vh',
+        position: 'relative',
+        top: '20vh',
+    }}
+      > Our Rooms 
+    </Typography>
     } backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Froom3.png?alt=media&token=910b9e2a-54b5-436a-8c8c-1fba99b19a3d"
   />
 );
@@ -189,28 +204,80 @@ export const RoomsTabContent = () => (
 
 export const FacilitiesTabContent = () => (
   <TabContent
-    title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
+    title={
+    <Typography 
+      variant="h1" 
+      component="div" 
+      style={{textAlign: 'center' , 
+        fontFamily:'Playfair Display', 
+        color:"white", 
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+        fontSize: '90px',
+        fontWeight: 'bold',
+        height: '90vh',
+        position: 'relative',
+        top: '30vh',
+      }}
       > Facilities we offer </Typography>
     } backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2FSwimming.png?alt=media&token=a8b2c994-cf8e-429c-b874-fd01b633a44e" />
 );
 
 export const ContactTabContent = () => (
   <TabContent
-    title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
+    title={
+    <Typography 
+      variant="h1" 
+      component="div" 
+      style={{textAlign: 'center' , 
+        fontFamily:'Playfair Display', 
+        color:"white", 
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+        fontSize: '90px',
+        fontWeight: 'bold',
+        height: '90vh',
+        position: 'relative',
+        top: '30vh',
+      }}
       > Contact us </Typography>
     } backgroundImage="https://i.postimg.cc/Wb5WNvG7/pexels-asadphoto-1483053.jpg" />
 );
 
 export const LoginTabContent = () => (
   <TabContent
-    title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
+    title={
+    <Typography 
+      variant="h1" 
+      component="div" 
+      style={{textAlign: 'center' , 
+        fontFamily:'Playfair Display', 
+        color:"white", 
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+        fontSize: '90px',
+        fontWeight: 'bold',
+        height: '90vh',
+        position: 'relative',
+        top: '30vh',
+      }}
       > Login with us </Typography>
     } backgroundImage="https://i.postimg.cc/ZRTKbj5d/pexels-richard-segal-732340-1645028.jpg" />
 );
 
 export const RegisterTabContent = () => (
   <TabContent
-    title={<Typography variant="h1" component="div" style={{ textAlign: 'center', fontFamily: 'Playfair Display', color: "#001845", WebkitTextStroke: '1.3px white',}}
+    title={
+    <Typography 
+    variant="h1"
+    component="div" 
+    style={{textAlign: 'center' , 
+      fontFamily:'Playfair Display', 
+      color:"white", 
+      textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
+      fontSize: '90px',
+      fontWeight: 'bold',
+      height: '90vh',
+      position: 'relative',
+      top: '30vh',
+    }}
       > Register with us </Typography>
     } backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Flogin.jpg?alt=media&token=a810ff0a-6305-4be3-8a40-d0abbb0b8875" />
 );
@@ -360,6 +427,7 @@ const Navigation = () => {
             value={value}
             onChange={handleChange}
             textColor="inherit"
+            TabIndicatorProps= {{ style: {backgroundColor: 'rgba(255,255,255,0.9)' ,height: "0px" } }}
             sx={{
               '.MuiTab-root': {
                 fontFamily: "'Playfair Display', serif",
@@ -380,7 +448,7 @@ const Navigation = () => {
                 }
               }
             }}
-            style={{ marginRight: '1vw',padding: '20px 10px',}}
+            style={{padding: '20px 10px',}}
           >
             {!user && <Tab label="Login" component={Link} to="/login" value={5} />}
             {!user && <Tab label="Register" component={Link} to="/register" value={6} />}

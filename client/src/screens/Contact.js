@@ -72,6 +72,7 @@ const ContactUsForm = () => {
           alignItems: "center",
           minHeight: "70vh",
           padding: "20px",
+          margin: "2vh 0"
         }}
       >
         <Card
@@ -80,12 +81,13 @@ const ContactUsForm = () => {
             width: "100%",
             maxWidth: "600px",
             borderRadius: "15px",
+            padding: "0 20px",
           }}
         >
           <CardContent>
             <Typography
               variant="h5"
-              style={{ textAlign: "center", marginBottom: "20px", color: "#333" }}
+              style={{ textAlign: "center", marginBottom: "3vh", color: "#333", fontWeight: "bold" }}
             >
               Contact Us
             </Typography>
@@ -99,6 +101,7 @@ const ContactUsForm = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    style={{ padding: "0 0vw" }}
                     required
                     InputProps={{
                       startAdornment: (
@@ -178,7 +181,7 @@ const ContactUsForm = () => {
 
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={8000}
         onClose={handleClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >

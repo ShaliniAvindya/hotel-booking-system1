@@ -9,7 +9,7 @@
 
 //     useEffect(() => {
 //         // Fetch room data from the backend API
-//         fetch(`http://localhost:5000/rooms/${id}`)
+//         fetch(`http://localhost:8000/rooms/${id}`)
 //             .then(response => {
 //                 if (!response.ok) {
 //                     throw new Error('Failed to fetch room data');

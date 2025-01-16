@@ -78,7 +78,7 @@ const BookRoom = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:6000/rooms/${id}`);
+        const response = await fetch(`http://localhost:8000/rooms/${id}`);
         console.log(response);
         if (!response.ok) {
           throw new Error('Failed to fetch room data');
@@ -128,7 +128,7 @@ const BookRoom = () => {
     };
     console.log(bookingBody);
     try {
-      const response = await axios.post('http://localhost:6000/book/', bookingBody);
+      const response = await axios.post('http://localhost:8000/book/', bookingBody);
       console.log('Booking successful:', response.data);
       Swal.fire('Congrats', 'Your booking is successful.','success').then(result=>{
         window.location.reload();
