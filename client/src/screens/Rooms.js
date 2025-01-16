@@ -13,6 +13,9 @@ import { Carousel } from 'react-responsive-carousel';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material'; // Import arrow icons
 import RoomSearch from '../components/RoomSearch';
 import Slider from 'react-slick';
+import PhoneIcon from '@mui/icons-material/Phone';
+import BookingCalendar from '../components/Bookingcalender';
+import { useLocation } from 'react-router-dom';
 
 const facilityIcons = {
   "Free Wi-Fi": <WifiIcon />,
@@ -31,6 +34,8 @@ const Rooms = () => {
   const [toDate, setToDate] = useState(null);
   const [filteredRooms, setFilteredRooms] = useState([]);
 
+  const location = useLocation();
+
   const settings = {
     dots: true, 
     infinite: true, 
@@ -40,6 +45,20 @@ const Rooms = () => {
     autoplay: true,
     arrows: true, 
   };
+
+  useEffect(() => {
+    // If the user came from home page, read the date range
+    if (location.state?.fromDate && location.state?.toDate) {
+      // Convert ISO string or timestamp back to Date
+      setFromDate(new Date(location.state.fromDate));
+      setToDate(new Date(location.state.toDate));
+    }
+  }, [location.state]);
+  
+  const handleDateRangeSelect = (from, to) => {
+      setFromDate(from);
+      setToDate(to);
+    };
 
   const handleRoomClick = (room) => {
     setSelectedRoom(room);
@@ -64,25 +83,23 @@ const Rooms = () => {
             toDate,
           },
         });
-        console.log('Fetched rooms:', response);
+        console.log('Fetched rooms:', response.data);
         setRooms(response.data);
         setFilteredRooms(response.data); 
       } catch (error) {
-        console.log('Error fetching rooms:', error);
         console.error('Error fetching rooms:', error);
       }
     };
     fetchData();
   }, [fromDate, toDate]); // Run on date changes
-  
 
   return (
     <div style={{ backgroundColor: '#f9f9f9' }}>
       <br />
-      <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script' , fontSize: '50px', fontWeight: 'bold'  }}>Book Now</h1>
+      <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script', fontSize: '50px', fontWeight: 'bold' }}>Book Now</h1>
       <br />
 
-      <div style={{  margin: '0 0',width: 'fit-content', position: 'relative', left: '10vw',bottom: '1vh', zIndex: '1' }}>
+      <div style={{ margin: '0 0', width: 'fit-content', position: 'relative', left: '10vw', bottom: '1vh', zIndex: '1' }}>
         <DateRange onDateChange={handleDateRangeChange} />
       </div>
 
@@ -97,17 +114,17 @@ const Rooms = () => {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   alignItems: 'left',
-                  height: '69vh', 
+                  height: '69vh',
                   boxSizing: 'border-box',
-                  border: '1px solid #ccc', 
+                  border: '1px solid #ccc',
                   borderRadius: '8px',
-                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', 
+                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  transition: 'transform 0.3s ease, box-shadow 0.3s ease', 
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                   paddingBottom: '1vh',
                 }}
-                onClick={handleRoomClick}
+                onClick={() => handleRoomClick(room)}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'scale(1.05)';
                   e.currentTarget.style.boxShadow = '0px 8px 12px rgba(0, 0, 0, 0.15)';
@@ -118,19 +135,25 @@ const Rooms = () => {
                 }}
               >
                 <Slider {...settings} style={{ width: '100%', height: '38%' }}>
-                  {room.imageUrls.map((image, index) => (
-                    <div key={index}>
-                      <img
-                        src={image}
-                        alt={`${room.name} ${index}`}
-                        style={{
-                          width: '100%',
-                          height: '30vh', 
-                          objectFit: 'cover',
-                        }}
-                      />
+                  {room.imageUrls && Array.isArray(room.imageUrls) && room.imageUrls.length > 0 ? (
+                    room.imageUrls.map((image, index) => (
+                      <div key={index}>
+                        <img
+                          src={image}
+                          alt={`${room.name} ${index}`}
+                          style={{
+                            width: '100%',
+                            height: '30vh',
+                            objectFit: 'cover',
+                          }}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '10px' }}>
+                      <p>No images available</p>
                     </div>
-                  ))}
+                  )}
                 </Slider>
                 <p 
                   style={{
@@ -146,17 +169,13 @@ const Rooms = () => {
                 >
                   {room.type}
                 </p>
-                <div 
-                  style={{ 
-                    height: '55%',
-                    padding: '1vh 1vw',
-                  }}>
+                <div style={{ height: '55%', padding: '1vh 1vw' }}>
                   <h3
                     style={{
                       margin: '2vh 0vw 1vh 0vw',
                       fontSize: '1.4rem',
                       fontWeight: 'bold',
-                      color: '#333', 
+                      color: '#333',
                     }}
                   >
                     {room.name}
@@ -166,12 +185,12 @@ const Rooms = () => {
                       margin: '0 1vw 0 0vw',
                       textAlign: 'left',
                       fontSize: '0.9rem',
-                      color: '#555', 
+                      color: '#555',
                     }}
                   >
                     {room.description}
                   </p>
-                  <div style={{ backgroundColor: '#0A369D', height: '5px', width: '20%', margin: '1vh 0 1vh 0'}}></div>
+                  <div style={{ backgroundColor: '#0A369D', height: '5px', width: '20%', margin: '1vh 0 1vh 0' }}></div>
                   <div
                     style={{
                       display: 'flex',
@@ -181,12 +200,9 @@ const Rooms = () => {
                       overflowX: 'auto',
                       width: '100%',
                       height: '30%',
-                      scrollbarColor: 'rgba(0, 0, 0, 0.2)',
-                      scrollbarWidth: 'thin',
-                      scrollbarGutter: '5px',
                     }}
                   >
-                    {room.facilities.map((facility, index) => (
+                    {room.facilities && Array.isArray(room.facilities) && room.facilities.map((facility, index) => (
                       <div
                         key={index}
                         style={{
@@ -208,19 +224,29 @@ const Rooms = () => {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'left', marginTop: '1vh' }}>
                     <div>
-                      <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)'}}>Starting From</p>
+                      <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)' }}>Starting From</p>
                       <p
                         style={{
-                          fontSize: '0.9rem',
-                          color: 'black', 
-                          height: '10%',
                           fontSize: '30px',
                           fontWeight: 'bold',
+                          color: 'black',
                         }}
-                      >${room.rentPerDay}<span style={{ fontSize: '20px', color: 'rgba(0,0,0,0.5)'}}>/night</span>
+                      >
+                        ${room.rentPerDay}<span style={{ fontSize: '20px', color: 'rgba(0,0,0,0.5)' }}>/night</span>
                       </p>
                     </div>
-                    <button style={{ backgroundColor: '#0A369D', color: '#fff', padding: '5px 15px',margin: '2vh 0 0 0',height: '40px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>
+                    <button
+                      style={{
+                        backgroundColor: '#0A369D',
+                        color: '#fff',
+                        padding: '5px 15px',
+                        margin: '2vh 0 0 0',
+                        height: '40px',
+                        borderRadius: '5px',
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                    >
                       Book Now
                     </button>
                   </div>
@@ -237,62 +263,186 @@ const Rooms = () => {
         maxWidth="md" 
         fullWidth
         PaperProps={{
-          style: { minHeight: '500px' },
+          style: { 
+            minHeight: '79vh',
+            borderRadius: '10px',
+          },
         }}
       >
         {selectedRoom && (
           <>
-            <Carousel
-              showThumbs={false}
-              infiniteLoop
-              useKeyboardArrows
-              autoPlay
-              renderArrowPrev={(onClickHandler, hasPrev) =>
-                hasPrev && (
-                  <div onClick={onClickHandler} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', zIndex: 10 }}>
-                    <KeyboardArrowLeft style={{ fontSize: '40px', color: '#fff' }} />
+            <div style={{ position: 'relative', width: '100%' }}>
+              {/* Carousel */}
+              <Carousel
+                showThumbs={false}
+                infiniteLoop
+                useKeyboardArrows
+                autoPlay
+                renderArrowPrev={(onClickHandler, hasPrev) =>
+                  hasPrev && (
+                    <div 
+                      onClick={onClickHandler} 
+                      style={{ 
+                        position: 'absolute', 
+                        left: '10px', 
+                        top: '50%', 
+                        transform: 'translateY(-50%)', 
+                        cursor: 'pointer', 
+                        zIndex: 10 
+                      }}
+                    >
+                      <KeyboardArrowLeft style={{ fontSize: '40px', color: '#fff' }} />
+                    </div>
+                  )
+                }
+                renderArrowNext={(onClickHandler, hasNext) =>
+                  hasNext && (
+                    <div 
+                      onClick={onClickHandler} 
+                      style={{ 
+                        position: 'absolute', 
+                        right: '10px', 
+                        top: '50%', 
+                        transform: 'translateY(-50%)', 
+                        cursor: 'pointer', 
+                        zIndex: 10 
+                      }}
+                    >
+                      <KeyboardArrowRight style={{ fontSize: '40px', color: '#fff' }} />
+                    </div>
+                  )
+                }
+              >
+                {selectedRoom.imageUrls.map((url, index) => (
+                  <div key={index}>
+                    <img 
+                      src={url} 
+                      alt={`${selectedRoom.name}`} 
+                      style={{ 
+                        width: '100%', 
+                        height: '350px', 
+                        objectFit: 'cover', 
+                      }} 
+                    />
                   </div>
-                )
-              }
-              renderArrowNext={(onClickHandler, hasNext) =>
-                hasNext && (
-                  <div onClick={onClickHandler} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', zIndex: 10 }}>
-                    <KeyboardArrowRight style={{ fontSize: '40px', color: '#fff' }} />
-                  </div>
-                )
-              }
-            >
-              {selectedRoom.imageUrls.map((url, index) => (
-                <div key={index}>
-                  <img src={url} alt={`${selectedRoom.name}`} style={{ width: '100%', height: '450px' }} />
-                </div>
-              ))}
-            </Carousel>
-            <DialogTitle>{selectedRoom.name}</DialogTitle>
-            <DialogContent>
-              <Typography variant="body1">Type: {selectedRoom.type}</Typography>
-              <Typography variant="body1">Description: {selectedRoom.description}</Typography>
+                ))}
+              </Carousel>
 
-              <Box display="flex" justifyContent="space-between" mt={2}>
-                <Typography variant="body1">Max Count: {selectedRoom.maxCount}</Typography>
-                <Typography variant="body1">Phone Number: {selectedRoom.phoneNumber}</Typography>
-                <Typography variant="body1">Rent Per Day: {selectedRoom.rentPerDay}</Typography>
+              {/* Fixed Dark Strip with Room Name */}
+              <div 
+                style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  width: '100%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark strip background
+                  padding: '10px 20px',
+                  zIndex: 5,
+                  textAlign: 'center',
+                }}
+              >
+                <Typography 
+                  style={{
+                    fontFamily: 'Playfair Display, serif',
+                    color: '#fff',
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                  }}
+                >
+                  {selectedRoom.name}
+                </Typography>
+              </div>
+            </div>
+
+            <DialogContent style={{ padding: '0 20px' }}>
+              <Typography 
+                variant="body1" 
+                style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', marginBottom: '20px', textAlign: 'center' }}
+              >
+                {selectedRoom.description}
+              </Typography>
+
+              <Box display="flex" justifyContent="space-between" mt={2} style={{ padding: '0 1vw' }}>
+                <Typography 
+                  variant="body1" 
+                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', marginBottom: '10px',backgroundColor: 'rgba(0,0,50,0.2)', padding: '5px 10px'}}
+                >
+                  {selectedRoom.type}
+                </Typography>
+                <Typography 
+                  variant="body1" 
+                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
+                >
+                  Max Count: {selectedRoom.maxCount}
+                </Typography>
+                <Typography 
+                  variant="body1" 
+                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78', display: 'flex', alignItems: 'center' }}
+                >
+                  <PhoneIcon style={{ marginRight: '8px', color: '#2b2a78' }} />
+                  {selectedRoom.phoneNumber}
+                </Typography>
+                <Typography 
+                  variant="body1" 
+                  style={{ fontFamily: 'Playfair Display, serif', color: '#2b2a78' }}
+                >
+                  <span style={{ fontWeight: 'bold', fontSize: '25px'}}>${selectedRoom.rentPerDay}</span>/night
+                </Typography>
               </Box>
-
-              <Typography variant="h6" style={{ marginTop: '10px' }}>Facilities:</Typography>
-              <Box display="flex" flexWrap="wrap" gap={2} alignItems="center">
+              <Box
+                display="flex"
+                flexWrap="wrap"
+                gap={2}
+                alignItems="center"
+                style={{
+                  padding: '10px',
+                  backgroundColor: '#f9f9f9',
+                  border: '1px solid #ccc',
+                  borderRadius: '8px',
+                  margin: '0 1vw 1vh 1vw',
+                }}
+              >
                 {Array.isArray(selectedRoom.facilities) && selectedRoom.facilities.map((facility, index) => (
-                  <Box key={index} display="flex" alignItems="center">
-                    {facilityIcons[facility] || null} {/* Render the corresponding icon */}
-                    <Typography variant="body2" style={{ marginLeft: '8px' }}>{facility}</Typography>
+                  <Box key={index} display="flex" alignItems="center" style={{ margin: '5px 10px' }}>
+                    {facilityIcons[facility] || null}
+                    <Typography 
+                      variant="body2" 
+                      style={{ 
+                        marginLeft: '8px', 
+                        fontWeight: 'bold', 
+                        fontFamily: 'Playfair Display, serif', 
+                        color: '#6B4F4F' 
+                      }}
+                    >
+                      {facility}
+                    </Typography>
                   </Box>
                 ))}
               </Box>
+              <BookingCalendar onDateRangeSelect={handleDateRangeSelect} />
             </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog} color="primary">Close</Button>
+            
+            <DialogActions style={{ display: 'flex', justifyContent: 'space-between', padding: '1vw 2vw' }}>
+              <Button 
+                onClick={handleCloseDialog} 
+                style={{ 
+                  border: '1px solid red', 
+                  color: '#633434', 
+                  padding: '10px 20px', 
+                  borderRadius: '8px' 
+                }}
+              >
+                Close
+              </Button>
               <Button
-                color="primary"
+                style={{
+                  backgroundColor: '#1E3A8A',
+                  color: '#fff',
+                  padding: '10px 20px',
+                  fontSize: '16px',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                }}
                 onClick={() => window.location.href = `/rooms/${selectedRoom._id}`}
               >
                 Book Now
@@ -301,6 +451,8 @@ const Rooms = () => {
           </>
         )}
       </Dialog>
+
+
       <br /><br />
 
       <Footer />

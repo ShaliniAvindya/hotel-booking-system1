@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import 'react-calendar/dist/Calendar.css';
 import BookingCalendar from './Bookingcalender';
+import { useNavigate } from 'react-router-dom';
 
 const AnimatedText = ({ children }) => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -44,6 +45,7 @@ const HomeTabContent = () => {
     autoplay: true,
     autoplaySpeed: 3000,
   };
+  const navigate = useNavigate();
 
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
@@ -55,7 +57,13 @@ const HomeTabContent = () => {
 
   const handleBooking = () => {
     if (fromDate && toDate) {
-      alert(`Booking confirmed! From: ${fromDate.toLocaleDateString()} To: ${toDate.toLocaleDateString()}`);
+      // Pass date range to /rooms via route state (or query params)
+      navigate('/rooms', {
+        state: {
+          fromDate: fromDate.toISOString(), 
+          toDate: toDate.toISOString()
+        },
+      });
     } else {
       alert('Please select a date range.');
     }

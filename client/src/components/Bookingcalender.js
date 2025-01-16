@@ -41,17 +41,41 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
     setPromoCode(event.target.value);
   };
 
+  const calculateCalendarPosition = (rect) => {
+    const calendarHeight = 330;  // approximate or measured
+    const offset = 10;           // offset from the input
+    const pageTop = rect.top + window.scrollY;
+    const pageBottom = rect.bottom + window.scrollY;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top; 
+    
+    let top = pageBottom + offset;
+    let left = rect.left + window.scrollX;
+  
+    if (spaceBelow < calendarHeight && spaceAbove > calendarHeight) {
+      const extraAboveOffset = -80;  
+      top = pageTop - calendarHeight - extraAboveOffset;
+    }
+  
+    
+    top = Math.max(0, top);
+  
+    return { top, left };
+  };
 
   const renderCalendarPortal = (ref, calendar, isOpen) => {
-    if (!isOpen) return null;
+    if (!isOpen || !ref.current) return null;
+
     const rect = ref.current.getBoundingClientRect();
+
+    const { top, left } = calculateCalendarPosition(rect);
 
     return ReactDOM.createPortal(
       <Box
         sx={{
           position: "absolute",
-          top: `${rect.bottom + window.scrollY}px`,
-          left: `${rect.left + window.scrollX}px`,
+          top: `${top}px`,
+          left: `${left}px`,
           zIndex: 10000,
           backgroundColor: "white",
           borderRadius: "4px",
@@ -79,60 +103,72 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
   const commonBoxStylesIn = {
     color: "rgba(0,0,0,0.8)",
     backgroundColor: "rgba(240,240,240,0.8)",
-    border: '1.5px solid rgba(1, 34, 92,0.4)',
+    border: "1.5px solid rgba(1, 34, 92,0.4)",
     width: "100%",
     padding: "10px 10px",
     borderRadius: "4px",
     display: "flex",
     justifyContent: "space-between",
     fontWeight: "bold",
-  }
+  };
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", width: "100% ", marginLeft: "0px", borderRadius: '4px' }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        width: "100% ",
+        marginLeft: "0px",
+        borderRadius: "4px",
+      }}
+    >
       {/* Check-In Date Tab */}
       <Box ref={checkinRef} sx={commonBoxStyles} onClick={handleCheckinClick}>
-        <Typography sx={{  color: "#333", marginBottom: "5px" }}>Check-In Date</Typography>
+        <Typography sx={{ color: "#333", marginBottom: "5px" }}>
+          Check-In Date
+        </Typography>
         <Typography sx={commonBoxStylesIn}>
-          {checkinDate ? checkinDate.toLocaleDateString() : "Select Check-In Date"}
+          {checkinDate
+            ? checkinDate.toLocaleDateString()
+            : "Select Check-In Date"}
           <CalendarTodayIcon
-              sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
+            sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
           />
         </Typography>
       </Box>
 
       {renderCalendarPortal(
         checkinRef,
-        <Calendar
-          onChange={handleCheckinDateChange}
-          value={checkinDate}
-        />,
+        <Calendar onChange={handleCheckinDateChange} value={checkinDate} />,
         showCheckinCalendar
       )}
 
       {/* Check-Out Date Tab */}
       <Box ref={checkoutRef} sx={commonBoxStyles} onClick={handleCheckoutClick}>
-        <Typography sx={{ color: "#333", marginBottom: "5px" }}>Check-Out Date</Typography>
+        <Typography sx={{ color: "#333", marginBottom: "5px" }}>
+          Check-Out Date
+        </Typography>
         <Typography sx={commonBoxStylesIn}>
-          {checkoutDate ? checkoutDate.toLocaleDateString() : "Select Check-Out Date"}
+          {checkoutDate
+            ? checkoutDate.toLocaleDateString()
+            : "Select Check-Out Date"}
           <CalendarTodayIcon
-              sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
+            sx={{ fontSize: "20px", color: "#333", marginRight: "5px" }}
           />
         </Typography>
       </Box>
 
       {renderCalendarPortal(
         checkoutRef,
-        <Calendar
-          onChange={handleCheckoutDateChange}
-          value={checkoutDate}
-        />,
+        <Calendar onChange={handleCheckoutDateChange} value={checkoutDate} />,
         showCheckoutCalendar
       )}
 
       {/* Promo Code Tab */}
       <Box sx={commonBoxStyles}>
-        <Typography sx={{ color: "#333", marginBottom: "5px" }}>Promo Code</Typography>
+        <Typography sx={{ color: "#333", marginBottom: "5px" }}>
+          Promo Code
+        </Typography>
         <TextField
           value={promoCode}
           onChange={handlePromoCodeChange}
@@ -140,18 +176,16 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
           fullWidth
           variant="standard"
           InputProps={{ disableUnderline: true }}
-          sx={{ 
+          sx={{
             color: "rgba(0,0,0,0.8)",
             backgroundColor: "rgba(240,240,240,0.8)",
-            border: '1.5px solid rgba(1, 34, 92,0.4)',
+            border: "1.5px solid rgba(1, 34, 92,0.4)",
             width: "100%",
             padding: "5px 10px",
             borderRadius: "4px",
-            
           }}
         />
       </Box>
-
     </Box>
   );
 };
