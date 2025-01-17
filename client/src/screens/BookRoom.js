@@ -13,6 +13,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import moment from 'moment';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 const PremiumPaymentGateway = () => {
   const { id } = useParams();
@@ -21,6 +22,7 @@ const PremiumPaymentGateway = () => {
   const [toDate, setToDate] = useState(localStorage.getItem('toDate') || null);
   const [days, setDays] = useState(0);
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRoomData = async () => {
@@ -42,7 +44,7 @@ const PremiumPaymentGateway = () => {
     const paymentDetails = {
       room: selectedRoom.name,
       room_id: selectedRoom._id,
-      user_id: JSON.parse(localStorage.getItem('currentUser'))._id,
+      user_id: JSON.parse(localStorage.getItem('currentUser')).id,
       from_date: moment(fromDate).format('YYYY-MM-DD'),
       to_date: moment(toDate).format('YYYY-MM-DD'),
       total_days: days,
@@ -50,8 +52,11 @@ const PremiumPaymentGateway = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8000/payment/', paymentDetails);
+      console.log(paymentDetails);
+
+      const response = await axios.post('http://localhost:8000/api/book/', paymentDetails);
       Swal.fire('Payment Successful', 'Thank you for your payment!', 'success').then(() => {
+        navigate('/');
         window.location.reload();
       });
     } catch (error) {

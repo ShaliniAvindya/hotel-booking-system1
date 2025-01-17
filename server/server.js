@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes'); 
 const bodyParser = require("body-parser");
 const contactRoutes = require('./routes/contactRoutes'); 
+const bookRoutes = require('./routes/bookingRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -32,6 +33,7 @@ app.use(passport.session());
 
 app.use('/api/users', userRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use('/api/book', bookRoutes);
 app.use('/api/notifications', notificationRoutes); 
 
 // Connect to MongoDB

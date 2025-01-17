@@ -21,7 +21,6 @@ router.post('/', async (req, res) => {
             const pastToDate = new Date(booking.to_date);
             const currentFromDate = new Date(from_date);
             const currentToDate = new Date(to_date);
-
             // Correct date conflict check (no overlap condition)
             if (
                 (currentFromDate <= pastToDate && currentFromDate >= pastFromDate) || 
@@ -35,7 +34,6 @@ router.post('/', async (req, res) => {
 
         if (datesFree) {
             const booking = await newBooking.save();
-            console.log(booking);
 
             currentRoom.currentBookings.push({
                 booking_id: booking._id,
