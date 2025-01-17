@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import 'react-calendar/dist/Calendar.css';
 import BookingCalendar from './Bookingcalender';
 import { useNavigate } from 'react-router-dom';
+import { Payment } from '@mui/icons-material';
 
 const AnimatedText = ({ children }) => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -57,7 +58,6 @@ const HomeTabContent = () => {
 
   const handleBooking = () => {
     if (fromDate && toDate) {
-      // Pass date range to /rooms via route state (or query params)
       navigate('/rooms', {
         state: {
           fromDate: fromDate.toISOString(), 
@@ -290,6 +290,26 @@ export const RegisterTabContent = () => (
     } backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Flogin.jpg?alt=media&token=a810ff0a-6305-4be3-8a40-d0abbb0b8875" />
 );
 
+export const PaymentGateway = () => (
+  <TabContent
+    title={
+    <Typography
+      variant="h1"
+      component="div"
+      style={{textAlign: 'center' ,
+        fontFamily:'Playfair Display',
+        color:"white",
+        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+        fontSize: '90px',
+        fontWeight: 'bold',
+        height: '90vh',
+        position: 'relative',
+        top: '40vh',
+      }}
+      > Payment Gateway </Typography>
+    } backgroundImage="https://barn2.com/wp-content/uploads/2023/01/Top-payment-gateways-for-WooCommerce-Header.png" />
+);
+
 
 export const AccountTabContent = () => {
   const [user, setUser] = useState();
@@ -340,6 +360,11 @@ const Navigation = () => {
       setValue(6);
     } else if (location.pathname === '/account') {
       setValue(7);
+    }
+    else if (location.pathname === '/admin') {
+      setValue(8);
+    } else if (/^\/rooms\/payment\/[a-zA-Z0-9]+$/.test(location.pathname)) {  
+      setValue(10);
     } else {
       setValue(0);
     }
@@ -476,6 +501,7 @@ const Navigation = () => {
         {value === 5 && <LoginTabContent />}
         {value === 6 && <RegisterTabContent />}
         {value === 7 && <AccountTabContent />}
+        {value === 10 && <PaymentGateway />}
       </div>
     </div>
   );

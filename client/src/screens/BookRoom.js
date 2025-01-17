@@ -1,123 +1,45 @@
-// BookRoom.js
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Divider, Paper, Card, CardContent, CardMedia,
-          Table, TableBody, TableCell, TableContainer, TableHead, TableRow 
-        } from '@mui/material';
-import DateRange from '../components/DateRange';
+import {
+  Typography,
+  Button,
+  Paper,
+  TextField,
+  Divider,
+  Grid,
+  Box,
+} from '@mui/material';
 import { useParams } from 'react-router-dom';
-import {styled} from '@mui/system';
-import moment from 'moment';
 import axios from 'axios';
-import { animated, useSpring } from 'react-spring';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import Swal from 'sweetalert2';
+import moment from 'moment';
+import Footer from '../components/Footer';
 
-const useStyles = styled('div')({
-    largeImage: {
-      height: '300px', // Adjust the height as needed
-      objectFit: 'cover',
-    },
-  });
-
-// const AnimatedText = ({ children }) => {
-//   const [prevScrollPos, setPrevScrollPos] = useState(0);
-//   const [visible, setVisible] = useState(true);
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       const currentScrollPos = window.pageYOffset;
-//       setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
-//       setPrevScrollPos(currentScrollPos);
-//     };
-
-//     window.addEventListener('scroll', handleScroll);
-//     return () => {
-//       window.removeEventListener('scroll', handleScroll);
-//     };
-//   }, [prevScrollPos]);
-
-//   const props = useSpring({
-//     opacity: visible ? 1 : 0,
-//     transform: 'scale(1)',
-//     from: { opacity: 0, transform: 'scale(1.5)' }
-//   });
-
-//   return <animated.div style={props}>{children}</animated.div>;
-// };
-
-// const backgroundStyles = {
-//   0: {
-//     backgroundImage: `url(Business.png)`,
-//     backgroundRepeat: 'no-repeat',
-//     backgroundSize: 'cover',
-//     minHeight: '98vh',
-//     opacity: '0.9'
-//   },
-// }
-
-// const BookRoomContent = () => (
-//   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'black', position: 'relative', minHeight: '98vh' }}>
-//     <AnimatedText>
-//       <Typography variant="h1" component="div" style={{ textAlign: 'center' }} marginTop={11} fontFamily={'Playfair Display'}>
-//         Book Now
-//       </Typography>
-//     </AnimatedText>
-//   </div>
-// );
-
-const BookRoom = () => {
+const PremiumPaymentGateway = () => {
   const { id } = useParams();
-  const [selectedRoom, setSelectedRoom] = useState([]);
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState({});
+  const [fromDate, setFromDate] = useState(localStorage.getItem('fromDate') || null);
+  const [toDate, setToDate] = useState(localStorage.getItem('toDate') || null);
   const [days, setDays] = useState(0);
   const [total, setTotal] = useState(0);
 
-  const classes = useStyles;
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRoomData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/rooms/${id}`);
-        console.log(response);
-        if (!response.ok) {
-          throw new Error('Failed to fetch room data');
-        }
-  
-        const data = await response.json();
-        console.log(data);
-        setSelectedRoom(data.room);
-
-        setFromDate(localStorage.getItem('fromDate'));
-        setToDate(localStorage.getItem('toDate'));
-
+        const response = await axios.get(`http://localhost:8000/api/rooms/${id}`);
+        setSelectedRoom(response.data);
+        const diffInDays = moment.duration(moment(toDate).diff(moment(fromDate))).asDays() + 1;
+        setDays(diffInDays);
+        setTotal(diffInDays * response.data.rentPerDay);
       } catch (error) {
-        console.error('Error fetching room:', error);
+        console.error('Error fetching room data:', error);
       }
     };
-  
-    fetchData();
-  }, [id]);
 
-  useEffect( () => {
-    //const differenceInDays = moment.duration(moment(localStorage.getItem('toDate')).diff(moment(localStorage.getItem('fromDate')))).asDays() + 1;
-    const differenceInDays = moment.duration(moment(toDate).diff(moment(fromDate))).asDays() + 1;
-    setDays(differenceInDays);
-    setTotal(differenceInDays * selectedRoom.rentPerDay);
-  }, [fromDate, toDate] )
+    fetchRoomData();
+  }, [id, fromDate, toDate]);
 
-  const handleDateRangeChange = (dates) => {
-    setFromDate(dates[0]);
-    setToDate(dates[1]);
-    const diffInDays = moment.duration(moment(dates[1],'YYYY-MM-DD').diff(moment(dates[0],'YYYY-MM-DD'))).asDays() + 1;
-    setDays(diffInDays);
-    setTotal(diffInDays * selectedRoom.rentPerDay);
-  }
-
-  const handleBookNow = async () => {
-    // Implement your booking logic here, using selectedRoom and the date range
-    // For simplicity, we'll just log the details to the console
-    const bookingBody = {
+  const handlePayment = async () => {
+    const paymentDetails = {
       room: selectedRoom.name,
       room_id: selectedRoom._id,
       user_id: JSON.parse(localStorage.getItem('currentUser'))._id,
@@ -126,73 +48,134 @@ const BookRoom = () => {
       total_days: days,
       total_amount: total,
     };
-    console.log(bookingBody);
+
     try {
-      const response = await axios.post('http://localhost:8000/book/', bookingBody);
-      console.log('Booking successful:', response.data);
-      Swal.fire('Congrats', 'Your booking is successful.','success').then(result=>{
+      const response = await axios.post('http://localhost:8000/payment/', paymentDetails);
+      Swal.fire('Payment Successful', 'Thank you for your payment!', 'success').then(() => {
         window.location.reload();
-      })
+      });
     } catch (error) {
-      console.error('Error booking room:', error.message);
+      Swal.fire('Payment Failed', 'There was an error processing your payment.', 'error');
+      console.error('Payment error:', error);
     }
   };
 
-  if (!selectedRoom) {
+  if (!selectedRoom.name) {
     return <div>Loading...</div>;
   }
 
   return (
-      <Paper elevation={3} style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-        <Card>
-          <CardMedia
-              component="img"
-              alt={selectedRoom.name}
-              className={classes.largeImage}
-              height="auto"
-              image={selectedRoom?.imageUrls?.length ? selectedRoom.imageUrls[0] : 'default-image-url'}
+    <div>
+      <Paper
+        elevation={3}
+        style={{
+          maxWidth: '50vw',
+          margin: 'auto',
+          backgroundColor: '#f9f9f9',
+          boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.15)',
+        }}
+      >
+        <Box
+          style={{
+            backgroundImage: `url(${selectedRoom?.imageUrls?.[0] || 'default-image-url'})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            height: '30vh',
+            marginBottom: '1vh',
+          }}
+        ></Box>
+        <div style={{ padding: '0 2vw 3vh 2vw' }}>
+          <Typography
+            variant="h4"
+            style={{
+              fontFamily: 'Playfair Display, serif',
+              textAlign: 'center',
+              fontWeight: 'bold',
+            }}
+          >
+            Secure Payment Gateway
+          </Typography>
+          <Divider style={{ margin: '1vh' }} />
+          <Grid container spacing={2} style={{ padding: '0 0px' }}>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                Room Name:
+              </Typography>
+              <Typography variant="body1">{selectedRoom.name}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                Total Amount:
+              </Typography>
+              <Typography variant="body1">${total}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                Check-in:
+              </Typography>
+              <Typography variant="body1">{moment(fromDate).format('YYYY-MM-DD')}</Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="subtitle1" style={{ fontWeight: 'bold' }}>
+                Check-out:
+              </Typography>
+              <Typography variant="body1">{moment(toDate).format('YYYY-MM-DD')}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider style={{ margin: '1vh 0' }} />
+            </Grid>
+          </Grid>
+          <Typography
+            variant="h6"
+            style={{ marginBottom: '1vh', fontFamily: 'Roboto, sans-serif' }}
+          >
+            Enter Payment Details:
+          </Typography>
+          <TextField
+            fullWidth
+            label="Card Number"
+            variant="outlined"
+            style={{ marginBottom: '1vh', backgroundColor: '#fff', borderRadius: '10px' }}
           />
-          <CardContent>
-            <Typography variant="h4">{selectedRoom.name}</Typography>
-            <Typography variant="subtitle1">Type: {selectedRoom.type}</Typography>
-            <Typography variant="subtitle1">Rent per Day: ${selectedRoom.rentPerDay}</Typography>
-            <Typography>{selectedRoom.description}</Typography>
-            <Divider style={{ margin: '16px 0' }} />
-            <DateRange onDateChange={handleDateRangeChange}/>
-            <Typography variant='h6'>Days : {days ? days : 0}</Typography>
-            <Typography variant='h6'>Total : ${total ? total : 0}</Typography>
-            <Button variant="contained" color="primary" onClick={handleBookNow} style={{ marginTop: '16px' }}>
-              Pay Now
-            </Button>
-          </CardContent>
-          <Typography variant='h6'>Current bookings ...</Typography>
-          <TableContainer component={Paper}>
-              <Table>
-                  <TableHead>
-                      <TableRow>
-                          <TableCell>ID</TableCell>
-                          <TableCell>From Date</TableCell>
-                          <TableCell>To Date</TableCell>
-                      </TableRow>
-                  </TableHead>
-                  <TableBody>
-                      {selectedRoom.currentBookings && 
-                          selectedRoom.currentBookings.map((booking, index) => 
-                          { booking.status === "Booked" && (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell> {/* Auto-incremented ID */}
-                              <TableCell>{new Date(booking.from_date).toLocaleDateString()}</TableCell>
-                              <TableCell>{new Date(booking.to_date).toLocaleDateString()}</TableCell>
-                            </TableRow>
-                          )
-                          }
-                      )}
-                  </TableBody>
-              </Table>
-          </TableContainer>
-        </Card>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Expiry Date (MM/YY)"
+                variant="outlined"
+                style={{ marginBottom: '1vh', backgroundColor: '#fff', borderRadius: '10px' }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="CVV"
+                variant="outlined"
+                style={{ marginBottom: '1vh', backgroundColor: '#fff', borderRadius: '10px' }}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            variant="contained"
+            fullWidth
+            style={{
+              backgroundColor: '#4CAF50',
+              color: '#fff',
+              padding: '15px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+              borderRadius: '10px',
+              boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.1)',
+            }}
+            onClick={handlePayment}
+          >
+            Pay Now
+          </Button>
+        </div>
       </Paper>
+      <Footer />
+    </div>
   );
 };
 
-export default BookRoom;
+export default PremiumPaymentGateway;

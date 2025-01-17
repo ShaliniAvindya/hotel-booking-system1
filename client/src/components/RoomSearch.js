@@ -102,7 +102,7 @@ const RoomSearch = ({ setFilteredRooms, rooms }) => {
   };
 
   return (
-    <div style={{ marginBottom: "10vh" }}>
+    <div style={{ marginBottom: "5vh", backgroundColor: "#fff", padding: '3vh 2vw'}}>
       <div style={{ display: "flex", flexDirection: "row", gap: "10px", alignItems: "center" }}>
         {/* Search Bar with Magnifying Glass Icon */}
         <TextField

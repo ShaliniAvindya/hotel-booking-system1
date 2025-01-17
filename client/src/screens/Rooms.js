@@ -15,7 +15,8 @@ import RoomSearch from '../components/RoomSearch';
 import Slider from 'react-slick';
 import PhoneIcon from '@mui/icons-material/Phone';
 import BookingCalendar from '../components/Bookingcalender';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 const facilityIcons = {
   "Free Wi-Fi": <WifiIcon />,
@@ -35,6 +36,7 @@ const Rooms = () => {
   const [filteredRooms, setFilteredRooms] = useState([]);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const settings = {
     dots: true, 
@@ -47,9 +49,7 @@ const Rooms = () => {
   };
 
   useEffect(() => {
-    // If the user came from home page, read the date range
     if (location.state?.fromDate && location.state?.toDate) {
-      // Convert ISO string or timestamp back to Date
       setFromDate(new Date(location.state.fromDate));
       setToDate(new Date(location.state.toDate));
     }
@@ -74,6 +74,19 @@ const Rooms = () => {
     setToDate(dates[1]);
   };
 
+  const handleOpenPaymentDialog = () => {
+    if (selectedRoom) {
+      localStorage.setItem('fromDate', dayjs(fromDate).format('YYYY-MM-DD'));
+      localStorage.setItem('toDate', dayjs(toDate).format('YYYY-MM-DD'));
+      navigate(`/rooms/payment/${selectedRoom._id}`, {
+        state: {
+          fromDate,
+          toDate,
+        },
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -83,7 +96,6 @@ const Rooms = () => {
             toDate,
           },
         });
-        console.log('Fetched rooms:', response.data);
         setRooms(response.data);
         setFilteredRooms(response.data); 
       } catch (error) {
@@ -94,13 +106,13 @@ const Rooms = () => {
   }, [fromDate, toDate]); // Run on date changes
 
   return (
-    <div style={{ backgroundColor: '#f9f9f9' }}>
+    <div style={{ backgroundColor: '#f2f9fc' }}>
       <br />
       <h1 style={{ textAlign: "center", fontFamily: 'Dancing Script', fontSize: '50px', fontWeight: 'bold' }}>Book Now</h1>
       <br />
 
       <div style={{ margin: '0 0', width: 'fit-content', position: 'relative', left: '10vw', bottom: '1vh', zIndex: '1' }}>
-        <DateRange onDateChange={handleDateRangeChange} />
+        <DateRange onDateChange={handleDateRangeChange} initialDates={[dayjs(fromDate), dayjs(toDate)]}  />
       </div>
 
       <div style={{ padding: '0 10%', marginTop: '1%' }}>
@@ -123,6 +135,7 @@ const Rooms = () => {
                   cursor: 'pointer',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                   paddingBottom: '1vh',
+                  backgroundColor: '#fff',
                 }}
                 onClick={() => handleRoomClick(room)}
                 onMouseEnter={(e) => {
@@ -224,7 +237,7 @@ const Rooms = () => {
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'left', marginTop: '1vh' }}>
                     <div>
-                      <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)' }}>Starting From</p>
+                      <p style={{ fontSize: '15px', color: 'rgba(0,0,0,0.5)', marginBottom: '0' }}>Starting From</p>
                       <p
                         style={{
                           fontSize: '30px',
@@ -422,13 +435,13 @@ const Rooms = () => {
               <BookingCalendar onDateRangeSelect={handleDateRangeSelect} />
             </DialogContent>
             
-            <DialogActions style={{ display: 'flex', justifyContent: 'space-between', padding: '1vw 2vw' }}>
+            <DialogActions style={{ display: 'flex', justifyContent: 'space-between', padding: '1vh 2vw 4vh 2vw' }}>
               <Button 
                 onClick={handleCloseDialog} 
                 style={{ 
                   border: '1px solid red', 
                   color: '#633434', 
-                  padding: '10px 20px', 
+                  padding: '5px 10px', 
                   borderRadius: '8px' 
                 }}
               >
@@ -438,12 +451,12 @@ const Rooms = () => {
                 style={{
                   backgroundColor: '#1E3A8A',
                   color: '#fff',
-                  padding: '10px 20px',
+                  padding: '5px 10px',
                   fontSize: '16px',
                   borderRadius: '8px',
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                 }}
-                onClick={() => window.location.href = `/rooms/${selectedRoom._id}`}
+                onClick={handleOpenPaymentDialog}
               >
                 Book Now
               </Button>
@@ -451,8 +464,6 @@ const Rooms = () => {
           </>
         )}
       </Dialog>
-
-
       <br /><br />
 
       <Footer />

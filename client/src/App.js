@@ -6,7 +6,7 @@ import Rooms from './screens/Rooms';
 import Register from './screens/Register';
 import Login from './screens/Login';
 import Account from './screens/Account';
-import BookRoom from './components/BookRoom'; 
+import BookRoom from './screens/BookRoom'; 
 import Facilities from './screens/Facilities';
 import Contact from './screens/Contact';
 import AdminPanel from './screens/AdminPanel';
@@ -20,14 +20,14 @@ const App = () => {
       <Routes> 
         <Route path='/' element={<HomeScreen />} />
         <Route path='/rooms' element={<Rooms />} /> 
-        <Route path='/rooms/:id' element={<BookRoom />} /> 
+        <Route path='/rooms/payment/:id' element={<BookRoom />} /> 
         <Route path='/register' element={<Register />} /> 
         <Route path='/login' element={<Login />} /> 
         <Route path='/account' element={<Account />} /> 
         <Route path='/facilities' element={<Facilities />} /> 
         <Route path='/contact' element={<Contact />} /> 
         <Route path='/admin' element={<AdminPanel />} /> 
-        <Route path='/rooms/:id' element={<RoomDetails/>}/>
+        {/* <Route path='/rooms/:id' element={<RoomDetails/>}/> */}
       </Routes>
     </div>
   );

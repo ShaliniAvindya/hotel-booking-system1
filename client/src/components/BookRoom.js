@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import './BookRoom.css';
 import { Typography, Button, Grid } from '@mui/material';
@@ -11,8 +11,11 @@ import { KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
 
 const BookRoom = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [room, setRoom] = useState(null);
   const [bookingDates, setBookingDates] = useState({ start: '', end: '' });
+  const { fromDate, toDate } = location.state || {}; 
+
 
   // Icons mapping for facilities
   const facilityIcons = {
@@ -21,7 +24,6 @@ const BookRoom = () => {
     "Bathtub": <Bathtub />,
     "Iron and Iron Board": <Iron />,
     "In-room Safe": <SafetyDivider />,
-    // Add more mappings as needed
   };
 
   const getNormalizedFacility = (facility) => {
@@ -29,7 +31,6 @@ const BookRoom = () => {
       "WiFi": "Free Wi-Fi",
       "Iron": "Iron and Iron Board",
       "Safe": "In-room Safe",
-      // Normalize other facility names if needed
     };
     return normalizedFacilityNames[facility] || facility;
   };
@@ -44,7 +45,7 @@ const BookRoom = () => {
       }
     };
     fetchRoom();
-  }, [id]);
+  }, [id, fromDate, toDate]);
 
   const handleBooking = async () => {
     console.log('Booking dates:', bookingDates);

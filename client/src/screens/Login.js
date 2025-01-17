@@ -250,7 +250,7 @@ const Login = () => {
   };
   
   const handleSocialLogin = (provider) => {
-    const url = `http://localhost:6000/api/users/auth/${provider}`;
+    const url = `http://localhost:8000/api/users/auth/${provider}`;
     window.location.href = url;
   };
 
