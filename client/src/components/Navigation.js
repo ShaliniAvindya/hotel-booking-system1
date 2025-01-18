@@ -8,7 +8,26 @@ import "slick-carousel/slick/slick-theme.css";
 import 'react-calendar/dist/Calendar.css';
 import BookingCalendar from './Bookingcalender';
 import { useNavigate } from 'react-router-dom';
-import { Payment } from '@mui/icons-material';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return isMobile;
+}
 
 const AnimatedText = ({ children }) => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
@@ -47,9 +66,10 @@ const HomeTabContent = () => {
     autoplaySpeed: 3000,
   };
   const navigate = useNavigate();
-
+  const isMobile = useIsMobile();
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+
 
   const handleDateRangeSelect = (from, to) => {
     setFromDate(from);
@@ -70,12 +90,12 @@ const HomeTabContent = () => {
   };
 
   return (
-    <div style={{ position: 'relative', minHeight: '98vh', opacity: '0.9' }}>
+    <div style={{ position: 'relative', minHeight: isMobile? '90vh' :'98vh', opacity: '0.9' }}>
       <Slider {...settings} dots={false}>
         <div
           style={{position: 'relative',}}
         >
-          <img src="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Fb.jpg?alt=media&token=8cd785be-e300-498d-8593-7bdd00698924" alt="Luxury hotel" style={{ width: '100%', height: '100vh', objectFit: 'cover' }} />
+          <img src="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2Fb.jpg?alt=media&token=8cd785be-e300-498d-8593-7bdd00698924" alt="Luxury hotel" style={{ width: '100%', height: isMobile ? '50vh' : '100vh', objectFit: 'cover' }} />
           <div
             style={{
               position: 'absolute',
@@ -88,23 +108,23 @@ const HomeTabContent = () => {
           />
         </div>
         <div>
-          <img src="https://i.postimg.cc/8CYsNjcV/pexels-asadphoto-3426880.jpg" alt="ocean" style={{ width: '100%', height: '100vh' }} />
+          <img src="https://i.postimg.cc/8CYsNjcV/pexels-asadphoto-3426880.jpg" alt="ocean" style={{ width: '100%', height: isMobile ? '50vh' : '100vh'  }} />
         </div>
         <div>
-          <img src="https://i.postimg.cc/yY3gdh9r/maldives-2299563-1280.jpg" alt="sea boat" style={{ width: '100%', height: '100vh' }} />
+          <img src="https://i.postimg.cc/yY3gdh9r/maldives-2299563-1280.jpg" alt="sea boat" style={{ width: '100%', height: isMobile ? '50vh' : '100vh' }} />
         </div>
         <div>
-          <img src="https://i.postimg.cc/2SvZHdSB/flowers-1854075-1280.jpg" alt="events" style={{ width: '100%', height: '100vh' }} />
+          <img src="https://i.postimg.cc/2SvZHdSB/flowers-1854075-1280.jpg" alt="events" style={{ width: '100%', height: isMobile ? '50vh' : '100vh' }} />
         </div>
         <div>
-          <img src="https://i.postimg.cc/3w8xg24h/pexels-asadphoto-3601440.jpg" alt="ocean view" style={{ width: '100%', height: '100vh' }} />
+          <img src="https://i.postimg.cc/3w8xg24h/pexels-asadphoto-3601440.jpg" alt="ocean view" style={{ width: '100%', height: isMobile ? '50vh' : '100vh' }} />
         </div>
         <div>
-          <img src="https://i.postimg.cc/NfqxcS6C/ray-954355-1280.jpg" alt="diving" style={{ width: '100%', height: '100vh' }} />
+          <img src="https://i.postimg.cc/NfqxcS6C/ray-954355-1280.jpg" alt="diving" style={{ width: '100%', height: isMobile ? '50vh' : '100vh' }} />
         </div>
       </Slider>
 
-      <div style={{ position: 'absolute', top: '35%', left: '50%', transform: 'translateX(-50%)' }}>
+      <div style={{ position: 'absolute', top: isMobile ? '20%' : '35%', left: '50%', transform: 'translateX(-50%)' }}>
         <AnimatedText>
           <Typography 
             variant="h1" 
@@ -114,8 +134,10 @@ const HomeTabContent = () => {
               fontFamily:'Playfair Display', 
               color:"white", 
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)', 
-              fontSize: '90px',
+              fontSize: isMobile ? '36px' : '90px',
               fontWeight: 'bold',
+              margin: isMobile ? '0 10px' : '0',
+              padding: isMobile ? '0 10px' : '0'
             }}>
             The Luxury Stay Awaits You
           </Typography>
@@ -125,32 +147,33 @@ const HomeTabContent = () => {
       {/* Date Picker and Book Now */}
       <div style={{
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'center',
-        flexDirection: 'row',
-        columnGap: '1vw',
+        columnGap: isMobile ? '0' : '1vw',
+        rowGap: isMobile ? '2vh' : '0',
         alignItems: 'center',
-        position: 'absolute',
-        bottom: '20%',
-        left: '20%',
-        width: '60%',
+        position: isMobile ? 'relative' : 'absolute',
+        bottom: isMobile ? '10%' : '20%',
+        left: isMobile ? '0%' : '20%',
+        width: isMobile ? '100%' : '60%',
         backgroundColor: 'rgba(255, 255, 255, 1)',
-        padding: '2vh 1.5vw 2vh 1.2vw',
-        borderRadius: '6px',
+        padding: isMobile ? '2vh 7vw' : '2vh 1.5vw 2vh 1.2vw',
+        borderRadius: '6px'
       }}>
 
         {/* Show Booking Calendar */}
-        <BookingCalendar onDateRangeSelect={handleDateRangeSelect} />
+        <BookingCalendar onDateRangeSelect={handleDateRangeSelect} isMobile={isMobile} />
         <button 
           onClick={handleBooking}
           style={{
             backgroundColor: '#023e8a', 
             color: 'white', 
             padding: '10px 10px',
-            marginTop: '30px',
+            marginTop: isMobile? '0' :'30px',
             borderRadius: '4px', 
             fontSize: '16px',
             cursor: 'pointer',
-            width: '10vw',
+            width: isMobile? '100%' : '10vw',
             transition: 'background-color 0.3s ease',
           }}
           onMouseEnter={(e) => (e.target.style.backgroundColor = '#001845')}
@@ -351,6 +374,9 @@ const Navigation = () => {
   const [user, setUser] = useState();
   const location = useLocation();
 
+  const isMobile = useIsMobile();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     setUser(currentUser);
@@ -396,6 +422,24 @@ const Navigation = () => {
   const opacity = Math.min(1, (scrollPosition / 400)); 
   const backgroundColor = `rgba(0, 62, 138, ${opacity})`;
 
+  const handleDrawerOpen = () => setMobileOpen(true);
+  const handleDrawerClose = () => setMobileOpen(false);
+
+  const leftLinks = [
+    { label: 'Home', path: '/', tabValue: 0 },
+    { label: 'Rooms', path: '/rooms', tabValue: 1 },
+    { label: 'Facilities', path: '/facilities', tabValue: 2 },
+    { label: 'Contact', path: '/contact', tabValue: 3 },
+  ];
+
+  const rightLinks = [
+    !user && { label: 'Login', path: '/login', tabValue: 5 },
+    !user && { label: 'Register', path: '/register', tabValue: 6 },
+    user && !user.isAdmin && { label: 'Account', path: `/account/${user?.id}`, tabValue: 7 },
+    user && user.isAdmin && { label: 'Admin Panel', path: '/admin', tabValue: 8 },
+    user && { label: 'Logout', path: null, tabValue: 9 }
+  ].filter(Boolean);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -410,10 +454,10 @@ const Navigation = () => {
       <AppBar 
         position="fixed"
         style={{
-          backgroundColor: backgroundColor,
-          backdropFilter: 'blur(10px)',
+          backgroundColor: isMobile? 'rgba(0, 62, 138)' : backgroundColor,
+          backdropFilter: isMobile? 'none' :'blur(10px)',
           boxShadow: 'none',
-          height: '85px',
+          height: isMobile ? '80px' :  '85px',
         }}
       >
         <Toolbar
@@ -423,6 +467,7 @@ const Navigation = () => {
             alignItems: 'center',
             height: '100%',
             padding: '0 2vw', 
+            maxWidth: '100vw'
           }}
         >
           {/* Left Tabs */}
@@ -431,79 +476,224 @@ const Navigation = () => {
             component="div"
             sx={{
               fontFamily: "'Playfair Display', serif",
-              fontSize: '30px',
+              fontSize: isMobile ? '20px' : '30px',
               color: 'white', 
               textAlign: 'left',
               flex: 1, 
             }}
+            style={{ width: 'fit-content' }}
           >
             THE HOTEL LUXURY
           </Typography>
 
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            textColor="inherit"
-            TabIndicatorProps={{ style: {backgroundColor: 'rgba(255,255,255,0.9)' ,height: "2px", marginBottom: "5px" } }}
-            sx={{
-              '.MuiTab-root': {
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '20px',
-                textTransform: 'none', 
-                minWidth: '5vw', 
-                marginLeft: '1vw',
-                color: "white",
-                transition: 'color 0.3s ease',
-              },
-              flex: 2,
-              marginLeft: '11vw',
-            }}
-          >
-            <Tab label="Home" component={Link} to="/" value={0} />
-            <Tab label="Rooms" component={Link} to="/rooms" value={1} />
-            <Tab label="Facilities" component={Link} to="/facilities" value={2} />
-            <Tab label="Contact" component={Link} to="/contact" value={3} />
-          </Tabs>
+          {isMobile ? (
+            /* MOBILE VIEW */
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton
+                style={{ color: 'white' }}
+                onClick={handleDrawerOpen}
+              >
+                <MenuIcon />
+              </IconButton>
+            </div>
+          ) : (
+            /* DESKTOP VIEW */
+            <>
+              {/* Left Tabs */}
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                textColor="inherit"
+                TabIndicatorProps={{
+                  style: {
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    height: "2px",
+                    marginBottom: "5px"
+                  }
+                }}
+                sx={{
+                  '.MuiTab-root': {
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: isMobile ? '14px' : '20px',
+                    textTransform: 'none',
+                    minWidth: '5vw',
+                    marginLeft: '1vw',
+                    color: "white",
+                    transition: 'color 0.3s ease',
+                    padding: 0
+                  },
+                }}
+                style={{
+                  flex: 2,
+                  marginLeft: '11vw',
+                  minWidth: 'auto'
+                }}
+              >
+                {leftLinks.map((link) => (
+                  <Tab
+                    key={link.label}
+                    label={link.label}
+                    component={Link}
+                    to={link.path}
+                    value={link.tabValue}
+                  />
+                ))}
+              </Tabs>
 
-          {/* Right Tabs */}
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            textColor="inherit"
-            TabIndicatorProps= {{ style: {backgroundColor: 'rgba(255,255,255,0.9)' ,height: "0px" } }}
-            sx={{
-              '.MuiTab-root': {
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '20px',
-                textTransform: 'none', 
-                minWidth: '8vw',
-                marginLeft: '1vw',
-                padding: '0px 10px',
-                color: 'white', 
-                backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '25px',
-                border: '1px solid white',
-                transition: 'background-color 0.3s ease, color 0.3s ease',
-                '&:hover': {
-                  backgroundColor: 'rgba(255,255,255,0.3)',
-                  color: "white",
-                  scale: 1.001,
-                }
-              }
-            }}
-            style={{padding: '20px 10px',}}
-          >
-            {!user && <Tab label="Login" component={Link} to="/login" value={5} />}
-            {!user && <Tab label="Register" component={Link} to="/register" value={6} />}
-            {user && !user.isAdmin && <Tab label="Account" component={Link} to={`/account/${user?.id}`} value={7} />}
-            {user && user.isAdmin && <Tab label="Admin Panel" component={Link} to="/admin" value={8} />}
-            {user && <Tab label="Logout" onClick={handleLogout} value={9} />}
-          </Tabs>
+              {/* Right Tabs */}
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                textColor="inherit"
+                TabIndicatorProps={{
+                  style: { backgroundColor: 'rgba(255,255,255,0.9)', height: "0px" }
+                }}
+                sx={{
+                  '.MuiTab-root': {
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: isMobile ? '14px' : '20px',
+                    textTransform: 'none',
+                    minWidth: '8vw',
+                    marginLeft: '1vw',
+                    padding: '0px 10px',
+                    color: 'white',
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: '25px',
+                    border: '1px solid white',
+                    transition: 'background-color 0.3s ease, color 0.3s ease',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.3)',
+                      color: "white",
+                      scale: 1.001
+                    }
+                  }
+                }}
+                style={{
+                  padding: '20px 10px'
+                }}
+              >
+                {rightLinks.map((link) => {
+                  if (link.label === 'Logout') {
+                    return (
+                      <Tab
+                        key={link.label}
+                        label={link.label}
+                        onClick={handleLogout}
+                        value={link.tabValue}
+                      />
+                    );
+                  }
+                  return (
+                    <Tab
+                      key={link.label}
+                      label={link.label}
+                      component={Link}
+                      to={link.path || '#'}
+                      value={link.tabValue}
+                    />
+                  );
+                })}
+              </Tabs>
+            </>
+          )}
         </Toolbar>
       </AppBar>
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={handleDrawerClose}
+        PaperProps={{
+          style: { width: '70vw', backgroundColor: '#023e8a' }
+        }}
+      >
+        <List style={{ marginTop: '20px' }}>
+          {/* Left Nav Links */}
+          {leftLinks.map((link) => (
+            <ListItem
+              button
+              key={link.label}
+              onClick={() => {
+                handleDrawerClose();
+                setValue(link.tabValue);
+              }}
+              component={Link}
+              to={link.path}
+              style={{
+                borderBottom: '1px solid rgba(255,255,255,0.2)'
+              }}
+            >
+              <ListItemText
+                primary={link.label}
+                primaryTypographyProps={{
+                  style: {
+                    fontFamily: "'Playfair Display', serif",
+                    fontSize: '18px',
+                    color: 'white'
+                  }
+                }}
+              />
+            </ListItem>
+          ))}
+          {/* Right Nav Links */}
+          {rightLinks.map((link) => {
+            if (link.label === 'Logout') {
+              return (
+                <ListItem
+                  button
+                  key={link.label}
+                  onClick={() => {
+                    handleLogout();
+                    handleDrawerClose();
+                  }}
+                  style={{
+                    borderBottom: '1px solid rgba(255,255,255,0.2)',
+                  }}
+                >
+                  <ListItemText
+                    primary={link.label}
+                    primaryTypographyProps={{
+                      style: {
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: '18px',
+                        color: 'white',
+                      }
+                    }}
+                  />
+                </ListItem>
+              );
+            }
+            return (
+              <ListItem
+                button
+                key={link.label}
+                onClick={() => {
+                  handleDrawerClose();
+                  setValue(link.tabValue);
+                }}
+                component={Link}
+                to={link.path || '#'}
+                style={{
+                  borderBottom: '1px solid rgba(255,255,255,0.2)'
+                }}
+              >
+                <ListItemText
+                  primary={link.label}
+                  primaryTypographyProps={{
+                    style: {
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: '18px',
+                      color: 'white'
+                    }
+                  }}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
+      </Drawer>
 
       {/* Tab Content */}
-      <div style={{ position: 'relative', minHeight: '98vh' }}>
+      <div style={{ position: 'relative', minHeight: isMobile? '89vh': '98vh', marginTop: isMobile ? '70px' : '0', backgroundColor: 'white' }}>
         {value === 0 && <HomeTabContent />}
         {value === 1 && <RoomsTabContent />}
         {value === 2 && <FacilitiesTabContent />}

@@ -5,7 +5,8 @@ import "react-calendar/dist/Calendar.css";
 import { Box, Typography, TextField } from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
-const BookingCalendar = ({ onDateRangeSelect }) => {
+
+const BookingCalendar = ({ onDateRangeSelect, isMobile }) => {
   const [showCheckinCalendar, setShowCheckinCalendar] = useState(false);
   const [showCheckoutCalendar, setShowCheckoutCalendar] = useState(false);
   const [checkinDate, setCheckinDate] = useState(new Date());
@@ -93,11 +94,12 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
     position: "relative",
     display: "flex",
     flexDirection: "column",
-    alignItems: "left",
+    alignItems: isMobile? "center" : "left",
     padding: "5px 10px",
     borderRadius: "4px",
     cursor: "pointer",
     justifyContent: "center",
+    width: "100%",
   };
 
   const commonBoxStylesIn = {
@@ -116,6 +118,7 @@ const BookingCalendar = ({ onDateRangeSelect }) => {
     <Box
       sx={{
         display: "flex",
+        flexDirection: isMobile ? "column" : "row",
         alignItems: "center",
         width: "100% ",
         marginLeft: "0px",
