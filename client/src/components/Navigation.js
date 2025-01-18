@@ -701,6 +701,7 @@ const Navigation = () => {
         {value === 5 && <LoginTabContent />}
         {value === 6 && <RegisterTabContent />}
         {value === 7 && <AccountTabContent />}
+        {value === 8 && <AccountTabContent />}
         {value === 10 && <PaymentGateway />}
       </div>
     </div>
