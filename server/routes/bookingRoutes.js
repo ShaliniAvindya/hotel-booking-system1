@@ -94,4 +94,23 @@ router.post('/cancel/:id', async (req, res) => {
     }
 });
 
+router.put('/update-status/:transaction_id', async (req, res) => {
+    const _id = req.params.transaction_id;
+    const { status } = req.body;
+    try {
+        const booking = await Booking.findOne({ _id: _id });
+        if (!booking) {
+            return res.status(404).send("Booking not found.");
+        }
+
+        booking.status = status;
+        await booking.save();
+
+        res.send("Booking status updated successfully.");
+    } catch (err) {
+        res.status(400).json(err);
+    }
+});
+
+
 module.exports = router;

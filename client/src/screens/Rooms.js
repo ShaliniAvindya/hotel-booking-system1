@@ -18,15 +18,6 @@ import BookingCalendar from '../components/Bookingcalender';
 import { useLocation, useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
 
-const facilityIcons = {
-  "Free Wi-Fi": <WifiIcon />,
-  "Minibar": <FreeBreakfastIcon />,
-  "Shower WC": <BathtubIcon />,
-  "Bathrobe": <LocalLaundryServiceIcon />,
-  "In-room Digital Safe": <SafetyCheckIcon />,
-  "Iron and Iron Board": <LocalLaundryServiceIcon />,
-};
-
 const Rooms = () => {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
@@ -85,6 +76,15 @@ const Rooms = () => {
         },
       });
     }
+  };
+
+  const facilityIcons = {
+    "Free Wi-Fi": <WifiIcon />,
+    "Minibar": <FreeBreakfastIcon />,
+    "Shower WC": <BathtubIcon />,
+    "Bathrobe": <LocalLaundryServiceIcon />,
+    "In-room Digital Safe": <SafetyCheckIcon />,
+    "Iron and Iron Board": <LocalLaundryServiceIcon />,
   };
 
   useEffect(() => {
