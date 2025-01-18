@@ -121,4 +121,31 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.put( '/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, password } = req.body;
+  try {
+    // Find user by ID
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (name) {
+      user.name = name || user.name;
+    }
+
+    if (password) {
+      user.password = password || user.password;
+    }
+
+    await user.save();
+    res.json({ message: 'User updated successfully', user: { id: user.id, name: user.name } }); 
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ message: 'Error updating user', error });
+  }
+});
+
+
 module.exports = router;

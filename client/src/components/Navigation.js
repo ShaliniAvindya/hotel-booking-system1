@@ -320,22 +320,31 @@ export const AccountTabContent = () => {
   }, []);
 
   return (
-    <div style={{ 
-      position: 'relative', 
-      backgroundImage: `url('https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2FSpa.png?alt=media&token=f0e89146-dbfe-4a98-9eae-a1243bfb8de3')`,
-      backgroundSize: 'cover',
-      height: '100vh', 
-      opacity: 0.86,
-      color: "#001845",
-      WebkitTextStroke: '1.3px white',
-
-    }}>
-      <TabContent
-        title={user ? (user.isAdmin ? "Admin Dashboard" : "My Account") : "My Account"}
-      />
-    </div>
+    <TabContent
+      title={
+        <Typography
+          variant="h1"
+          component="div"
+          style={{
+            textAlign: 'center',
+            fontFamily: 'Playfair Display',
+            color: "white",
+            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+            fontSize: '90px',
+            fontWeight: 'bold',
+            height: '90vh',
+            position: 'relative',
+            top: '40vh',
+          }}
+        >
+          {user ? (user.isAdmin ? "Admin Dashboard" : "My Account") : "My Account"}
+        </Typography>
+      }
+      backgroundImage="https://firebasestorage.googleapis.com/v0/b/hotel-booking-system-35f4a.appspot.com/o/Public%20Folder%2FSpa.png?alt=media&token=f0e89146-dbfe-4a98-9eae-a1243bfb8de3"
+    />
   );
 };
+
 
 const Navigation = () => {
   const [value, setValue] = useState(0);
@@ -345,6 +354,7 @@ const Navigation = () => {
   useEffect(() => {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     setUser(currentUser);
+    console.log('User:', currentUser);
   }, []);
 
   useEffect(() => {
@@ -358,7 +368,7 @@ const Navigation = () => {
       setValue(5);
     } else if (location.pathname === '/register') {
       setValue(6);
-    } else if (location.pathname === '/account') {
+    } else if (/^\/account\/[a-zA-Z0-9]+$/.test(location.pathname)) {
       setValue(7);
     }
     else if (location.pathname === '/admin') {
@@ -368,7 +378,7 @@ const Navigation = () => {
     } else {
       setValue(0);
     }
-  }, [location]);
+  }, [location, user]);
 
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -485,7 +495,7 @@ const Navigation = () => {
           >
             {!user && <Tab label="Login" component={Link} to="/login" value={5} />}
             {!user && <Tab label="Register" component={Link} to="/register" value={6} />}
-            {user && !user.isAdmin && <Tab label="Account" component={Link} to="/account" value={7} />}
+            {user && !user.isAdmin && <Tab label="Account" component={Link} to={`/account/${user?.id}`} value={7} />}
             {user && user.isAdmin && <Tab label="Admin Panel" component={Link} to="/admin" value={8} />}
             {user && <Tab label="Logout" onClick={handleLogout} value={9} />}
           </Tabs>
