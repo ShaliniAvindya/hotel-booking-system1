@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Button, message as antdMessage, Modal } from 'antd';
+import { ReloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { confirm } = Modal;
@@ -26,7 +27,7 @@ const ManageNotifications = () => {
     try {
       await axios.delete(`/api/notifications/${id}`);
       antdMessage.success('Notification deleted successfully');
-      fetchNotifications(); 
+      fetchNotifications();
     } catch (error) {
       console.error('Error deleting notification:', error);
       antdMessage.error('Failed to delete notification');
@@ -40,7 +41,7 @@ const ManageNotifications = () => {
       okText: 'Yes',
       okType: 'danger',
       cancelText: 'No',
-      onOk: () => handleDelete(id), 
+      onOk: () => handleDelete(id),
     });
   };
 
@@ -63,7 +64,12 @@ const ManageNotifications = () => {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
-        <Button type="danger" onClick={() => showDeleteConfirm(record._id)}>
+        <Button
+          type="danger"
+          icon={<DeleteOutlined />}
+          onClick={() => showDeleteConfirm(record._id)}
+          style={{ borderRadius: '5px', color: 'red', borderColor: 'red' }}
+        >
           Delete
         </Button>
       ),
@@ -71,17 +77,39 @@ const ManageNotifications = () => {
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Manage Notifications</h2>
-      <Button type="primary" onClick={fetchNotifications} style={{ marginBottom: '10px' }}>
-        Reload Notifications
-      </Button>
-      <Table
-        dataSource={notifications}
-        columns={columns}
-        rowKey="_id"
-        loading={loading}
-      />
+    <div style={{ padding: '0px' }}>
+      <h2
+        style={{
+          textAlign: 'center',
+          fontSize: '40px',
+          fontWeight: 'bold',
+          marginBottom: '20px',
+          color: '#010e30',
+          fontFamily: 'Playfair Display',
+        }}
+      >
+        Manage Notifications
+      </h2>
+      <div style={{ padding: '0 2vw' }}>
+        <Button
+          type="primary"
+          icon={<ReloadOutlined />}
+          onClick={fetchNotifications}
+          style={{
+            marginBottom: '20px',
+            borderRadius: '5px',
+          }}
+        >
+          Reload Notifications
+        </Button>
+        <Table
+          dataSource={notifications}
+          columns={columns}
+          rowKey="_id"
+          loading={loading}
+          style={{ borderRadius: '10px', overflow: 'hidden' }}
+        />
+      </div>
     </div>
   );
 };

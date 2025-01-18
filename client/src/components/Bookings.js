@@ -114,6 +114,7 @@ const Bookings = () => {
               color: '#031d42',
               fontWeight: 'bold',
               fontSize: '35px',
+              fontFamily: 'Playfair Display'
             }}
           >
             Bookings

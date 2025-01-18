@@ -147,5 +147,24 @@ router.put( '/:id', async (req, res) => {
   }
 });
 
+router.patch('/:id/admin', async (req, res) => {
+  const { id } = req.params;
+  const { isAdmin } = req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isAdmin = isAdmin;
+    await user.save();
+
+    res.json({ message: 'Admin status updated successfully', user: { id: user.id, isAdmin: user.isAdmin } });
+  } catch (error) {
+    console.error('Error updating admin status:', error);
+    res.status(500).json({ message: 'Error updating admin status', error });
+  }
+});
 
 module.exports = router;

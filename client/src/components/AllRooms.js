@@ -11,6 +11,13 @@ import LocalLaundryServiceIcon from '@mui/icons-material/LocalLaundryService';
 import SafetyCheckIcon from '@mui/icons-material/SafetyCheck';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Typography } from 'antd';
+import Swal from 'sweetalert2';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Autocomplete from '@mui/material/Autocomplete';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+
 
 const AllRooms = () => {
   const [rooms, setRooms] = useState([]);
@@ -27,6 +34,15 @@ const AllRooms = () => {
   const [imageIndices, setImageIndices] = useState({});
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const availableFacilities = [
+    "Free Wi-Fi",
+    "Minibar",
+    "Shower WC",
+    "Bathrobe",
+    "In-room Digital Safe",
+    "Iron and Iron Board",
+  ];
   
   const fetchRooms = async () => {
     try {
@@ -57,11 +73,52 @@ const AllRooms = () => {
       rentPerDay: room.rentPerDay || '',
       imageUrls: room.imageUrls && room.imageUrls.length > 0 ? room.imageUrls : [''],
     });
-    setImageIndices((prev) => ({
+    setDialogOpen(true); // Open the dialog
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false); // Close the dialog
+    setEditMode(null); // Reset edit mode
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`http://localhost:8000/api/rooms/${editMode}`, editedRoom);
+      setRooms((prevRooms) =>
+        prevRooms.map((room) => (room._id === editMode ? response.data : room))
+      );
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Room updated successfully!',
+      });
+      handleCloseDialog();
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update room.',
+      });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedRoom((prev) => ({
       ...prev,
-      [room._id]: 0, 
+      [name]: value,
     }));
   };
+
+  const handleFacilityChange = (event, newFacilities) => {
+    setEditedRoom((prev) => ({
+      ...prev,
+      facilities: newFacilities,
+    }));
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
   
   const handleUpdate = async (roomId) => {
     try {
@@ -82,14 +139,6 @@ const AllRooms = () => {
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedRoom((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
   };
 
   const handleImageChange = (roomId, direction) => {
@@ -156,7 +205,7 @@ const facilityIcons = {
 
   return (
     <div>
-      <Typography.Title level={2} style={{ textAlign: 'center', margin: '2vh 0', color: '#031d42', fontWeight: 'bold', fontSize: '35px',}}>
+      <Typography.Title level={2} style={{ textAlign: 'center', margin: '2vh 0', color: '#031d42', fontWeight: 'bold', fontSize: '35px'}}>
         All Rooms
       </Typography.Title>
       <Grid container spacing={3} style={{ padding: '1vh 1vw' }}>
@@ -279,18 +328,21 @@ const facilityIcons = {
                   ))}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'left', marginTop: '1vh' }}>
-                  <Button
-                    onClick={() => handleEdit(room)}
-                    variant="contained"
-                    color="secondary"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    onClick={() => handleDelete(room._id)}
-                    variant="contained"
-                    color="primary"
-                  >
+                <Button
+                  onClick={() => handleEdit(room)}
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<EditOutlinedIcon />}
+                  style={{ color: '#072d8f' , backgroundColor: 'white', border: '1px solid #072d8f' }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={() => handleDelete(room._id)}
+                  variant="contained"
+                  startIcon={<DeleteOutlineOutlinedIcon />}
+                  style={{ color: 'red', backgroundColor: 'white', border: '1px solid red' }}
+                >
                     Delete
                   </Button>
                 </div>
@@ -299,6 +351,77 @@ const facilityIcons = {
           </Grid>
         ))}
       </Grid>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle style={{ fontSize: '25px', textAlign: 'center'}}>Edit Room Details</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Name"
+            name="name"
+            fullWidth
+            value={editedRoom.name}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            name="description"
+            fullWidth
+            value={editedRoom.description}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="Max Count"
+            name="maxCount"
+            fullWidth
+            value={editedRoom.maxCount}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="dense"
+            label="Rent Per Day"
+            name="rentPerDay"
+            fullWidth
+            value={editedRoom.rentPerDay}
+            onChange={handleInputChange}
+          />
+          <Autocomplete
+            multiple
+            options={availableFacilities}
+            getOptionLabel={(option) => option}
+            value={editedRoom.facilities}
+            onChange={handleFacilityChange}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip
+                  label={option}
+                  {...getTagProps({ index })}
+                  color="primary"
+                  variant="outlined"
+                />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Facilities"
+                placeholder="Select facilities"
+                margin='dense'
+              />
+            )}
+          />
+        </DialogContent>
+        <DialogActions style={{ padding: '0vh 2vw 3vh 0' }}>
+          <Button onClick={handleCloseDialog} style={{ border: '1px solid #072d8f', color: '#072d8f' }}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave}  style={{ border: '1px solid #072d8f', color: 'white', backgroundColor: '#072d8f' }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

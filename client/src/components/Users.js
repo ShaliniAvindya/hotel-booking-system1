@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Button, message, Popconfirm, Space } from 'antd';
+import { Table, Tag, Button, message, Popconfirm, Space, Switch } from 'antd';
+import { DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const Users = () => {
@@ -34,6 +35,19 @@ const Users = () => {
     }
   };
 
+  const handleToggleAdminStatus = async (userId, currentStatus) => {
+    try {
+      await axios.patch(`http://localhost:8000/api/users/${userId}`, {
+        isAdmin: !currentStatus,
+      });
+      message.success('Admin status updated successfully');
+      fetchUsers(); // Refresh the list
+    } catch (error) {
+      console.error(error);
+      message.error('Failed to update admin status');
+    }
+  };
+
   const columns = [
     {
       title: 'Name',
@@ -49,10 +63,22 @@ const Users = () => {
       title: 'Is Admin',
       dataIndex: 'isAdmin',
       key: 'isAdmin',
-      render: (isAdmin) => (
-        <Tag color={isAdmin ? 'green' : 'volcano'}>
-          {isAdmin ? 'Yes' : 'No'}
-        </Tag>
+      render: (isAdmin, record) => (
+        <Space>
+          <Tag color={isAdmin ? 'green' : 'volcano'}>
+            {isAdmin ? 'Yes' : 'No'}
+          </Tag>
+          <Popconfirm
+            title={`Are you sure you want to ${
+              isAdmin ? 'revoke admin rights' : 'grant admin rights'
+            } for this user?`}
+            onConfirm={() => handleToggleAdminStatus(record._id, isAdmin)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Switch checked={isAdmin} />
+          </Popconfirm>
+        </Space>
       ),
     },
     {
@@ -65,7 +91,10 @@ const Users = () => {
           okText="Yes"
           cancelText="No"
         >
-          <Button style={{ backgroundColor: 'blueviolet', color: 'white' }}>
+          <Button
+            style={{ backgroundColor: 'white', color: 'red', border: '1px solid red' }}
+            icon={<DeleteOutlined />}
+          >
             Delete
           </Button>
         </Popconfirm>
@@ -73,9 +102,10 @@ const Users = () => {
     },
   ];
 
-  return (
-    <div>
 
+  return (
+    <div style={{ padding: '0px' }}>
+      <h1 style={{ textAlign: 'center', fontSize: '40px', fontWeight: 'bold', fontFamily: 'Playfair Display' }}>Users</h1>
       <Table
         columns={columns}
         dataSource={users}
@@ -83,14 +113,15 @@ const Users = () => {
         rowKey="_id"
         pagination={{ pageSize: 10 }}
       />
-      <Space style={{ 
-        marginBottom: 8,
-        display: 'flex',
-        justifyContent: 'center', // Center horizontally
-        alignItems: 'center',
-        
-        }}>
-        <Button type="primary" onClick={fetchUsers}>
+      <Space
+        style={{
+          marginBottom: 8,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Button type="primary" onClick={fetchUsers} icon={<ReloadOutlined />}>
           Reload Users
         </Button>
       </Space>

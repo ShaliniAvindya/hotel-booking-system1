@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, message, Space } from 'antd';
+import { DeleteOutlined, MailOutlined, ReloadOutlined } from '@ant-design/icons';
 
 const ContactInquiries = () => {
   const [inquiries, setInquiries] = useState([]);
@@ -130,6 +131,7 @@ const ContactInquiries = () => {
         <Space>
           <Button
             type="primary"
+            icon={<MailOutlined />}
             onClick={() => {
               setCurrentInquiry(record);
               setReplyModalVisible(true);
@@ -140,7 +142,12 @@ const ContactInquiries = () => {
           <Button type="link" onClick={() => handleViewReply(record)}>
             View Reply
           </Button>
-          <Button type="danger" onClick={() => deleteInquiry(record._id)}>
+          <Button
+            type="danger"
+            icon={<DeleteOutlined />}
+            onClick={() => deleteInquiry(record._id)}
+            style={{ color: 'red', border: '1px solid red' }}
+          >
             Delete
           </Button>
         </Space>
@@ -150,12 +157,24 @@ const ContactInquiries = () => {
 
   return (
     <div>
-      <h2>Contact Inquiries</h2>
+      <h2
+        style={{
+          textAlign: 'center',
+          fontSize: '40px',
+          fontWeight: 'bold',
+          marginBottom: '20px',
+          color: '#010e30',
+          fontFamily: 'Playfair Display',
+        }}
+      >
+        Contact Inquiries
+      </h2>
       <Button
         type="primary"
         onClick={fetchInquiries}
         disabled={loading}
         style={{ marginBottom: '20px' }}
+        icon={<ReloadOutlined />}
       >
         {loading ? 'Reloading...' : 'Reload Inquiries'}
       </Button>
