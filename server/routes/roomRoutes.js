@@ -44,13 +44,48 @@ router.get('/search', async (req, res) => {
     }
 });
 
+// router.get('/', async (req, res) => {
+//     try {
+//         console.log(req.query);
+//         const rooms = await Room.find();
+//         res.status(200).json(rooms);
+//     } catch (error) {
+//         console.error('Error fetching rooms:', error);
+//         res.status(500).json({ error: 'Failed to retrieve rooms' });
+//     }
+// });
+
 router.get('/', async (req, res) => {
     try {
+        const { fromDate, toDate } = req.query;
         const rooms = await Room.find();
-        res.status(200).json(rooms);
+        const newRooms = [];
+        for (const room of rooms) {
+            let datesFree = true;
+            for (const booking of room.currentBookings) {
+                const pastFromDate = new Date(booking.from_date);
+                const pastToDate = new Date(booking.to_date);
+                const currentFromDate = new Date(fromDate);
+                const currentToDate = new Date(toDate);
+
+                if (
+                    (currentFromDate <= pastToDate && currentFromDate >= pastFromDate) || 
+                    (currentToDate <= pastToDate && currentToDate >= pastFromDate) ||
+                    (currentFromDate <= pastFromDate && currentToDate >= pastToDate)
+                ) {
+                    datesFree = false;
+                    break;
+                }
+            }
+            if (datesFree) {
+                newRooms.push(room);
+            }
+        }       
+
+        res.status(200).json(newRooms);
     } catch (error) {
-        console.error('Error fetching rooms:', error);
-        res.status(500).json({ error: 'Failed to retrieve rooms' });
+        console.error('Error fetching available rooms:', error);
+        res.status(500).json({ error: 'Failed to retrieve available rooms' });
     }
 });
 

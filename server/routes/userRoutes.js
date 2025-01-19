@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Registration Route
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, contact_number } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -20,7 +20,8 @@ router.post('/register', async (req, res) => {
     user = new User({
       name,
       email,
-      password, // Plain text password (will be hashed in pre-save middleware)
+      password, 
+      contact_number,
       isAdmin: false,
     });
 
@@ -62,6 +63,7 @@ router.post('/login', async (req, res) => {
               id: user._id,
               name: user.name,
               email: user.email,
+              contact_number: user.contact_number,
               isAdmin: user.isAdmin,
           },
       });

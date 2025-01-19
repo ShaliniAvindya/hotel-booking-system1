@@ -126,7 +126,7 @@ const Bookings = () => {
               columns={columns}
               dataSource={bookings}
               loading={loading}
-              rowKey={(record) => record.transaction_id}
+              rowKey={(record) => record._id}
               pagination={{ pageSize: 7 }}
               bordered
             />

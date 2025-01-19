@@ -517,7 +517,7 @@ const Navigation = () => {
                     fontSize: isMobile ? '14px' : '20px',
                     textTransform: 'none',
                     minWidth: '5vw',
-                    marginLeft: '1vw',
+                    marginLeft: '2.5vw',
                     color: "white",
                     transition: 'color 0.3s ease',
                     padding: 0

@@ -12,6 +12,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use('/rooms', roomRoutes);
 app.use('/users', userRoutes);

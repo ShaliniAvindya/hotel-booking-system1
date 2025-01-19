@@ -50,6 +50,7 @@ const Signup = () => {
         name: formData.name,
         email: formData.email,
         password: formData.password,
+        contact_number: formData.phone,
       });
 
       setSnackbarType("success");
@@ -110,7 +111,7 @@ const Signup = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  style={{ width: "100%", padding: "14px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
+                  style={{ width: "100%", padding: "10px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
                   required
                 />
                 <input
@@ -119,9 +120,18 @@ const Signup = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  style={{ width: "100%", padding: "14px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
+                  style={{ width: "100%", padding: "10px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
                   required
                 />
+                <input 
+                  type="text" 
+                  placeholder="Phone Number" 
+                  name="phone" 
+                  value={formData.phone} 
+                  onChange={handleChange} 
+                  style={{ width: "100%", padding: "10px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }} 
+                  required 
+                  />
                 <div style={{ position: "relative" }}>
                   <input
                     type={showPassword ? "text" : "password"}
@@ -129,7 +139,7 @@ const Signup = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    style={{ width: "100%", padding: "14px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
+                    style={{ width: "100%", padding: "10px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
                     required
                   />
                   <span
@@ -146,7 +156,7 @@ const Signup = () => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    style={{ width: "100%", padding: "14px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
+                    style={{ width: "100%", padding: "10px", margin: "5px 0", border: "1px solid #ddd", borderRadius: "5px", fontSize: "16px" }}
                     required
                   />
                   <span

@@ -60,7 +60,7 @@ const Rooms = () => {
     setOpenDialog(false);
   };
 
-  const handleDateRangeChange = (dates) => {
+  const  handleDateRangeChange = (dates) => {
     setFromDate(dates[0]);
     setToDate(dates[1]);
   };
@@ -89,21 +89,17 @@ const Rooms = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/rooms', {
-          params: {
-            fromDate,
-            toDate,
-          },
-        });
+      try { 
+        const response = await axios.get(`http://localhost:8000/api/rooms?fromDate=${dayjs(fromDate).format('YYYY-MM-DD')}&toDate=${dayjs(toDate).format('YYYY-MM-DD')}`);
         setRooms(response.data);
         setFilteredRooms(response.data); 
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching rooms:', error);
       }
     };
     fetchData();
-  }, [fromDate, toDate]); // Run on date changes
+  }, [fromDate, toDate]); 
 
   return (
     <div style={{ backgroundColor: '#f2f9fc' }}>

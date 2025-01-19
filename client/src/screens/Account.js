@@ -5,10 +5,12 @@ import AdminPanel from './AdminPanel';
 import Footer from '../components/Footer';
 import EmailIcon from '@mui/icons-material/Email';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Phone } from '@mui/icons-material';
 
 const Account = () => {
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  const { id: id, name, email, isAdmin: admin } = currentUser;
+  console.log(currentUser);
+  const { id: id, name, email, contact_number, isAdmin: admin } = currentUser;
 
   const [ongoingBookings, setOngoingBookings] = useState([]);
   const [previousBookings, setPreviousBookings] = useState([]);
@@ -36,13 +38,16 @@ const Account = () => {
           ongoing.map(async (booking) => {
             const roomResponse = await fetch(`http://localhost:8000/api/rooms/${booking.room_id}`);
             const roomData = await roomResponse.json();
-            images[booking.room_id] = roomData.imageUrls[0]; // Store the first image for the room
+            images[booking.room_id] = roomData.imageUrls[0]; 
+          }),
+          previous.map(async (booking) => {
+            const roomResponse = await fetch(`http://localhost:8000/api/rooms/${booking.room_id}`);
+            const roomData = await roomResponse.json();
+            images[booking.room_id] = roomData.imageUrls[0];
           })
         );
-
         setRoomImages(images);
         setOngoingBookings(ongoing);
-        console.log(previous)
         setPreviousBookings(previous);
       } catch (error) {
         console.error('Error fetching bookings:', error);
@@ -165,6 +170,19 @@ const Account = () => {
         >
           <EmailIcon style={{ marginRight: '8px', color: '#666' }} />
           {email}
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          style={{
+            color: '#666',
+            margin: '10px 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Phone style={{ marginRight: '8px', color: '#666' }} />
+          {contact_number}
         </Typography>
         <div style={{ marginTop: '20px' }}>
           <Button
