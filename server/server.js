@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use('/api/contact', contactRoutes);
 
 // Use CORS for cross-origin requests
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // Middleware to parse JSON data
 app.use(express.json());

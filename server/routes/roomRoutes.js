@@ -58,8 +58,16 @@ router.get('/search', async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const { fromDate, toDate } = req.query;
+        
+        // If no dates are provided, return all rooms
+        if (!fromDate || !toDate) {
+            const rooms = await Room.find();
+            return res.status(200).json(rooms);
+        }
+
+        // If dates are provided, filter rooms based on availability
         const rooms = await Room.find();
-        const newRooms = [];
+        const availableRooms = [];
         for (const room of rooms) {
             let datesFree = true;
             for (const booking of room.currentBookings) {
@@ -78,14 +86,14 @@ router.get('/', async (req, res) => {
                 }
             }
             if (datesFree) {
-                newRooms.push(room);
+                availableRooms.push(room);
             }
         }       
 
-        res.status(200).json(newRooms);
+        res.status(200).json(availableRooms);
     } catch (error) {
-        console.error('Error fetching available rooms:', error);
-        res.status(500).json({ error: 'Failed to retrieve available rooms' });
+        console.error('Error fetching rooms:', error);
+        res.status(500).json({ error: 'Failed to retrieve rooms' });
     }
 });
 

@@ -9,6 +9,7 @@ const roomSchema = new mongoose.Schema({
     type: { type: String, required: true },
     description: { type: String, required: true },
     currentBookings: { type: [Object], default: [] },
+    facilities: { type: [String], required: true },
 });
 
 module.exports = mongoose.model('Room', roomSchema);
