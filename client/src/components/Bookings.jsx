@@ -85,7 +85,7 @@ const Bookings = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/book/all');
+        const response = await axios.get('https://hotel-booking-system1-production.up.railway.app/api/book/all');
         setBookings(response.data);
         setLoading(false);
       } catch (error) {
