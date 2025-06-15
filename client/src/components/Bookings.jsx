@@ -16,7 +16,7 @@ const Bookings = () => {
     updatedBookings[index].status = value;
     setBookings(updatedBookings);
     axios
-      .put(`http://localhost:8000/api/book/update-status/${updatedBookings[index]._id}`, {
+      .put(`https://hotel-booking-system1-production.up.railway.app/api/book/update-status/${updatedBookings[index]._id}`, {
         status: value,
       })
       .catch((err) => console.error('Error updating status:', err));
