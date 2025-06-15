@@ -10,7 +10,7 @@ const RoomDetails = () => {
   useEffect(() => {
     const fetchRoomDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8000/api/rooms/${id}`); 
+        const response = await axios.get(`https://hotel-booking-system1-production.up.railway.app/api/rooms/${id}`); 
         setRoom(response.data);
         setLoading(false);
       } catch (error) {
